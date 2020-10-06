@@ -35,7 +35,7 @@ class KuisJawaban extends \yii\db\ActiveRecord
     {
         return [
             [['kuis_id', 'materi_id', 'jawaban_id'], 'integer'],
-            [['jawaban_konten'], 'string'],
+            [['jawaban_konten','skor'], 'string'],
             [['status'], 'string', 'max' => 255],
             [['jawaban_id'], 'exist', 'skipOnError' => true, 'targetClass' => Materi::className(), 'targetAttribute' => ['jawaban_id' => 'id']],
             [['kuis_id'], 'exist', 'skipOnError' => true, 'targetClass' => Kuis::className(), 'targetAttribute' => ['kuis_id' => 'id']],
@@ -55,6 +55,7 @@ class KuisJawaban extends \yii\db\ActiveRecord
             'jawaban_id' => 'Jawaban ID',
             'jawaban_konten' => 'Jawaban Konten',
             'status' => 'Status',
+            'skor' => 'Skor',
         ];
     }
 

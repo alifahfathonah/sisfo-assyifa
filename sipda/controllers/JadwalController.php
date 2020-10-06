@@ -171,6 +171,7 @@ class JadwalController extends Controller
             $kuisJawaban->jawaban_id = $jawab->id;
             $konten = $jawab->konten;
             $kuisJawaban->status = $jawab->tipe;
+            $kuisJawaban->skor = $jawab->tipe == 'Jawaban Benar' ? 1 : 0;
         }
         $kuisJawaban->jawaban_konten = $konten;
         $kuisJawaban->save();
