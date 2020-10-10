@@ -6,7 +6,9 @@ $params = array_merge(
     require __DIR__ . '/params-local.php'
 );
 
-return [
+
+
+$config = [
     'id' => 'app-frontend',
     'name'=>'Sistem Informasi STIKES As-Syifa',
     'basePath' => dirname(__DIR__),
@@ -46,3 +48,17 @@ return [
     ],
     'params' => $params,
 ];
+
+$config['as access'] =  [
+    'class' => 'mdm\admin\components\AccessControl',
+    'allowActions' => [
+        // '*',
+        'site/login',
+        // 'admin/*',
+        // 'gii/*',
+        // 'debug/*',
+        // 'ajax/*'
+    ]
+];
+
+return $config;

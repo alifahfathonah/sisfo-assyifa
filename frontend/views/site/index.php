@@ -9,7 +9,6 @@ $this->title = 'Sistem Informasi STIKES As-Syifa';
 <div class="site-index">
 
     <div class="jumbotron">
-        <img src="<?=Url::to(['images/logo.png'])?>" width="150px" alt="Logo STIKES As-Syifa">
         <h1>Selamat Datang!</h1>
 
         <p class="lead">Ini adalah sistem informasi STIKES As-Syifa Kisaran Kabupaten Asahan.</p>
