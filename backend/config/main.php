@@ -8,6 +8,7 @@ $params = array_merge(
 
 $config = [
     'id' => 'app-backend',
+    'name' => 'Sistem Informasi Back Office',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
