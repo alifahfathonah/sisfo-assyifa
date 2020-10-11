@@ -17,6 +17,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'judul')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'tipe_konten')->dropDownList([
+        'Teks'=>'Teks',
+        'PDF'=>'PDF'
+    ],['prompt'=>'- Pilih Tipe Konten -']) ?>
+
     <?= $form->field($model, 'konten')->textarea(['rows' => 6,'id'=>'editor1']) ?>
 
     <?= $form->field($model, 'status')->dropDownList([

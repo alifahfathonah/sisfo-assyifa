@@ -97,6 +97,11 @@ class MateriController extends Controller
         // });
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if($model->tipe_konten == 'PDF')
+            {
+                $model->konten = strip_tags($model->konten);
+                $model->save();
+            }
             Yii::$app->session->setFlash('success', "Materi Berhasil di Simpan!");
             return $this->redirect(['jadwal/materi','id'=>$jadwal_id,'index'=>$model->no_urut-1]);
         }
@@ -212,6 +217,11 @@ class MateriController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if($model->tipe_konten == 'PDF')
+            {
+                $model->konten = strip_tags($model->konten);
+                $model->save();
+            }
             Yii::$app->session->setFlash('success', "Materi Berhasil di Update!");
             return $this->redirect(['jadwal/materi','id'=>$jadwal_id,'index'=>$model->no_urut-1]);
         }

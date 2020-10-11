@@ -36,7 +36,7 @@ class Materi extends \yii\db\ActiveRecord
         return [
             [['dosen_pengampuh_id', 'no_urut'], 'integer'],
             [['konten'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['tipe_konten','created_at', 'updated_at'], 'safe'],
             [['judul', 'status', 'tipe'], 'string', 'max' => 255],
             [['dosen_pengampuh_id'], 'exist', 'skipOnError' => true, 'targetClass' => DosenPengampuh::className(), 'targetAttribute' => ['dosen_pengampuh_id' => 'id']],
         ];
@@ -55,6 +55,7 @@ class Materi extends \yii\db\ActiveRecord
             'status' => 'Status',
             'no_urut' => 'No Urut',
             'tipe' => 'Tipe',
+            'tipe_konten' => 'Tipe Konten',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

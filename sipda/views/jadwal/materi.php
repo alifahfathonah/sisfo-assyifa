@@ -57,7 +57,11 @@ $this->params['breadcrumbs'][] = $this->title;
         </p>
         <?php endif ?>
         <h3><?=$materi->judul?></h3>
+        <?php if($materi->tipe_konten == 'Teks'): ?>
         <?=$materi->konten?>
+        <?php elseif($materi->tipe_konten == 'PDF'): ?>
+            <iframe src="<?=$materi->konten?>" height="500px" width="100%"></iframe>
+        <?php endif ?>
 
         <?php if($materi->tipe == 'Kuis' && Yii::$app->user->can('Dosen')): ?>
         <br>
@@ -131,8 +135,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td><?=$p->mahasiswa->nama?></td>
                                 <td><?=$p->status?></td>
                             </tr>
-                            </tbody>
                             <?php endforeach ?>
+                            </tbody>
                         </table>
                     </div>
                 </div>
