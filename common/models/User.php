@@ -38,7 +38,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password_hash', 'email'], 'required'],
+            [['username', 'password_hash'], 'required'],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username'], 'unique', 'on'=>'update', 'when' => function($model){
                 return $model->isAttributeChanged('username');

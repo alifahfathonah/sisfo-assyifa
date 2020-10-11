@@ -20,8 +20,10 @@ use yii\widgets\ActiveForm;
         'D-I' => 'D-I',
         'D-II' => 'D-II',
         'D-III' => 'D-III',
-        'D-IV / S-I' => 'D-IV / S-I',
+        'D-IV' => 'D-IV',
+        'S-I' => 'S-I',
         'S-II' => 'S-II',
+        'Profesi' => 'Profesi',
     ]) ?>
 
     <div class="form-group">
