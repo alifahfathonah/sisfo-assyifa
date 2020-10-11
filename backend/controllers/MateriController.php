@@ -38,7 +38,9 @@ class MateriController extends Controller
     public function actionIndex()
     {
         $searchModel = new MateriSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        $queryParams['MateriSearch']['tipe'] = 'Materi';
+        $dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <td><?=$mhs->NIM?></td>
             <td><?=$mhs->nama?></td>
             <td>
-            <?= Html::dropDownList('status['.$mhs->id.']',$absensi[$mhs->id],[
+            <?= Html::dropDownList('status['.$mhs->id.']',isset($absensi[$mhs->id]) ? $absensi[$mhs->id] : '',[
                 'Hadir' => 'Hadir',
                 'Sakit' => 'Sakit',
                 'Izin' => 'Izin',
