@@ -38,7 +38,11 @@ $this->params['breadcrumbs'][] = "Mahasiswa";
                 'buttons' => [
                     'delete' => function($url,$model) {
                         return Html::a('<i class="fa fa-trash"></i>', $url, [
-                            'title' => Yii::t('app', 'delete')
+                            'title' => Yii::t('app', 'delete'),
+                            'data' => [
+                                'confirm' => 'Are you sure you want to delete this item?',
+                                'method' => 'post',
+                            ]
                         ]);
                     }
                  ]
