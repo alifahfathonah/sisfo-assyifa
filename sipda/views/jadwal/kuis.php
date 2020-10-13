@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php else: ?>
             <div class="form-group">
                 <b>Jawaban</b>
-                <textarea name="answer[<?=$materi->id?>]" id="jawaban<?=$materi->id?>" class="form-control"><?=$kuisJawaban->jawaban_konten?></textarea>
+                <textarea name="answer[<?=$materi->id?>]" id="jawaban<?=$materi->id?>" class="form-control"><?=$kuisJawaban?$kuisJawaban->jawaban_konten:''?></textarea>
             </div>
             <div class="form-group">
                 <div class="alert alert-success" role="alert" id="success" style="display:none">
