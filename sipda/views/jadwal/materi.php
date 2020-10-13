@@ -62,11 +62,7 @@ div[data-oembed-url] div {
         </p>
         <?php endif ?>
         <h3><?=$materi->judul?></h3>
-        <?php if($materi->tipe_konten == 'Teks'): ?>
         <?=$materi->konten?>
-        <?php elseif($materi->tipe_konten == 'PDF'): ?>
-            <iframe src="<?=$materi->konten?>" height="500px" width="100%"></iframe>
-        <?php endif ?>
 
         <?php if($materi->tipe == 'Kuis' && Yii::$app->user->can('Dosen')): ?>
         <br>
