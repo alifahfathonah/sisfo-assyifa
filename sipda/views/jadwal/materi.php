@@ -13,6 +13,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Jadwal', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
+<style>
+div[data-oembed-url] div {
+    max-width: 100%!important;
+}
+</style>
 <div class="jadwal-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
