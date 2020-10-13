@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-sipda',
-    'name'=>'Sistem Informasi Pembelajaran Daring (SIPDA)',
+    'name'=>'SIPDA',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'sipda\controllers',
