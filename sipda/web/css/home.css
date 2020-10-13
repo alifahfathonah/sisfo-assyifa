@@ -32,7 +32,21 @@ body {
 .form-control, .btn, .list-group-item {
     border-radius:0!important;
 }
-
+a.navbar-brand {
+    margin-left:15px!important;
+}
+.navbar-collapse  {
+    background-color: #FFF;
+}
+.navbar-toggle {
+    position: relative;
+    float: right;
+    padding: 10px;
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    background-color: #eaeaea;
+}
 ul.navbar-nav li a, a.navbar-brand, .btn-link.logout {
     color:#01d206;
     font-weight: bold;
