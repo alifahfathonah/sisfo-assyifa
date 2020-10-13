@@ -47,6 +47,13 @@ a.navbar-brand {
     margin-bottom: 8px;
     background-color: #eaeaea;
 }
+a.navbar-brand {
+    margin-left:15px!important;
+}
+.navbar-collapse  {
+    background-color: #FFF;
+}
+
 ul.navbar-nav li a, a.navbar-brand, .btn-link.logout {
     color:#01d206;
     font-weight: bold;
