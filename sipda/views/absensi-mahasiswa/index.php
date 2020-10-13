@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="absensi-mahasiswa-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+    <div class="table-responsive">
     <?php $form = ActiveForm::begin(['action'=>['absensi-mahasiswa/create','absensi_id'=>$model->id]]); ?>
     <table class="table table-bordered">
         <tr>
@@ -43,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <button class="btn btn-success">Simpan</button>
 
     <?php ActiveForm::end(); ?>
+    </div>
 
 
 </div>

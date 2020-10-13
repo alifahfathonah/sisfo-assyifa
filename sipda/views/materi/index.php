@@ -59,11 +59,15 @@ if(Yii::$app->user->can('Dosen'))
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <div class="table-responsive">
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $columns,
     ]); ?>
+
+    </div>
 
 
 </div>
