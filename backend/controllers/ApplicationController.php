@@ -99,7 +99,7 @@ class ApplicationController extends Controller
         $model = $this->findModel($id);
         $old_logo = $model->icon;
         if ($model->load(Yii::$app->request->post())) {
-            $logo = UploadedFile::getInstance($model, 'logo');
+            $logo = UploadedFile::getInstance($model, 'icon');
             if(isset($logo->extension))
             {
                 if($model->validate()){
