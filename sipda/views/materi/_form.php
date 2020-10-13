@@ -17,10 +17,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'judul')->textInput(['maxlength' => true]) ?>
 
+    <?php /*
+
     <?= $form->field($model, 'tipe_konten')->dropDownList([
         'Teks'=>'Teks',
         'PDF'=>'PDF'
     ],['prompt'=>'- Pilih Tipe Konten -']) ?>
+
+    */ ?>
 
     <?= $form->field($model, 'konten')->textarea(['rows' => 6,'id'=>'editor1']) ?>
 
@@ -29,14 +33,10 @@ use yii\widgets\ActiveForm;
         'Private'=>'Private'
     ],['prompt'=>'- Pilih Status -']) ?>
 
-    <?php /*
-
     <?= $form->field($model, 'tipe')->dropDownList([
         'Materi'=>'Materi',
         'Kuis'=>'Kuis',
     ],['prompt'=>'- Pilih Tipe -']) ?>
-
-    */ ?>
 
     <?= $form->field($model, 'no_urut')->textInput() ?>
 
