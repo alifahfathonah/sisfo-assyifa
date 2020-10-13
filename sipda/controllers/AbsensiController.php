@@ -6,6 +6,7 @@ use Yii;
 use common\models\Absensi;
 use common\models\AbsensiSearch;
 use common\models\Jadwal;
+use common\models\VwJadwal;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -67,13 +68,15 @@ class AbsensiController extends Controller
     public function actionCreate()
     {
         $model = new Absensi();
-        $jadwal = Jadwal::find()
-                    ->joinWith('dosen')
-                    ->where(['dosen.id'=>Yii::$app->user->identity->Id])
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
                     ->all();
 
-        $jadwal = ArrayHelper::map($jadwal,'id',function($model){
-            return $model->hari.' - '.$model->dosenPengampuh->mataKuliah->nama.' - '.$model->dosenPengampuh->kelas->nama;
+        $jadwal = ArrayHelper::map($jadwal,'jadwal_id',function($model){
+            return $model->hari.' - '.$model->nama_mata_kuliah.' - '.$model->kelas->nama;
         });
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
