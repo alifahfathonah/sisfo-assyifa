@@ -107,7 +107,7 @@ class DosenController extends Controller
             {
                 $auth = \Yii::$app->authManager;
                 $auth->revokeAll($user->id);
-                $authorRole = $auth->getRole('Mahasiswa');
+                $authorRole = $auth->getRole('Dosen');
                 $auth->assign($authorRole, $user->id);
             }
             return $this->redirect(['view', 'id' => $model->id]);
