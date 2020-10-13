@@ -29,10 +29,14 @@ use yii\widgets\ActiveForm;
         'Private'=>'Private'
     ],['prompt'=>'- Pilih Status -']) ?>
 
-<?= $form->field($model, 'tipe')->dropDownList([
+    <?php /*
+
+    <?= $form->field($model, 'tipe')->dropDownList([
         'Materi'=>'Materi',
         'Kuis'=>'Kuis',
     ],['prompt'=>'- Pilih Tipe -']) ?>
+
+    */ ?>
 
     <?= $form->field($model, 'no_urut')->textInput() ?>
 

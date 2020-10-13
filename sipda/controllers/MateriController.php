@@ -95,13 +95,14 @@ class MateriController extends Controller
         // $dosen_mata_kuliah = ArrayHelper::map($dosen->dosenPengampuhs,'id',function($model){
         //     return $model->mataKuliah->nama.' - '.$model->kelas->nama;
         // });
+        $model->tipe_konten = "Text";
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if($model->tipe_konten == 'PDF')
-            {
-                $model->konten = strip_tags($model->konten);
-                $model->save();
-            }
+            // if($model->tipe_konten == 'PDF')
+            // {
+            //     $model->konten = strip_tags($model->konten);
+            //     $model->save();
+            // }
             Yii::$app->session->setFlash('success', "Materi Berhasil di Simpan!");
             return $this->redirect(['jadwal/materi','id'=>$jadwal_id,'index'=>$model->no_urut-1]);
         }
@@ -215,13 +216,13 @@ class MateriController extends Controller
     public function actionUpdate($id, $jadwal_id)
     {
         $model = $this->findModel($id);
-
+        $model->tipe_konten = "Text";
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if($model->tipe_konten == 'PDF')
-            {
-                $model->konten = strip_tags($model->konten);
-                $model->save();
-            }
+            // if($model->tipe_konten == 'PDF')
+            // {
+            //     $model->konten = strip_tags($model->konten);
+            //     $model->save();
+            // }
             Yii::$app->session->setFlash('success', "Materi Berhasil di Update!");
             return $this->redirect(['jadwal/materi','id'=>$jadwal_id,'index'=>$model->no_urut-1]);
         }
