@@ -35,6 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'jadwal',
                 'value'=>function($model){
+                    if(!$model->jadwal)
+                        return '';
                     return $model->jadwal->hari.' - '.$model->jadwal->dosenPengampuh->mataKuliah->nama.' - '.$model->jadwal->dosenPengampuh->kelas->nama;
                 }
             ],
