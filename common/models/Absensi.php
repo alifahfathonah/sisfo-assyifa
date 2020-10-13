@@ -33,6 +33,7 @@ class Absensi extends \yii\db\ActiveRecord
     {
         return [
             [['jadwal_id', 'pertemuan'], 'integer'],
+            [['jadwal_id'], 'required'],
             [['tanggal', 'created_at'], 'safe'],
             [['jadwal_id'], 'exist', 'skipOnError' => true, 'targetClass' => Jadwal::className(), 'targetAttribute' => ['jadwal_id' => 'id']],
         ];
