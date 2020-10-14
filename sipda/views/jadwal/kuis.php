@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
         foreach($materi->childs as $answer): 
         ?>
         <div class="inputGroup col-sm-12 col-md-6" style="margin:0;padding:0;padding-right:10px;">
-            <input id="radio<?=$answer->id?>" onchange="simpanJawaban(<?=$answer->id?>,<?=$materi->id?>,'')" name="answers[<?=$materi->id?>]" type="radio" value="<?= $answer->id ?>" <?=$kuisJawaban->jawaban_id == $answer->id ? 'checked=""' : '' ?>/>
+            <input id="radio<?=$answer->id?>" onchange="simpanJawaban(<?=$answer->id?>,<?=$materi->id?>,'')" name="answers[<?=$materi->id?>]" type="radio" value="<?= $answer->id ?>" <?=$kuisJawaban && $kuisJawaban->jawaban_id == $answer->id ? 'checked=""' : '' ?>/>
             <label for="radio<?=$answer->id?>"><?= $answer->konten ?></label>
         </div>
         <?php endforeach ?>
