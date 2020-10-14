@@ -124,7 +124,7 @@ class JadwalController extends Controller
         $kuis = Kuis::find()->where(['materi_id'=>$id,'mahasiswa_id'=>$user->mahasiswa->id])->one();
         $kuis->status = 'Selesai';
         $kuis->save();
-        return $this->redirect(['materi','id'=>$jadwal_id,'index'=>$materi->no_urut-1]);
+        return $this->redirect(['materi','id'=>$jadwal_id]);
     }
 
     public function actionKuis($id,$jadwal_id,$index = 0)
@@ -197,7 +197,7 @@ class JadwalController extends Controller
             $kuisJawaban->skor = $jawab->tipe == 'Jawaban Benar' ? 1 : 0;
         }
         $kuisJawaban->jawaban_konten = $konten;
-        $kuisJawaban->save();
+        $kuisJawaban->save(false);
 
         echo 'success';
         return;
