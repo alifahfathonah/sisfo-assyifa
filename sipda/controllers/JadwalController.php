@@ -151,6 +151,29 @@ class JadwalController extends Controller
         ]);
     }
 
+    public function actionHasilKuis($id,$jadwal_id)
+    {
+        $this->layout = 'main-materi';
+        $model = Kuis::findOne($id);
+        if(isset($_POST['kuis_jawaban']))
+        {
+            foreach($_POST['kuis_jawaban'] as $kuis_jawaban_id => $kuis_jawaban_value)
+            {
+                $kuisJawaban = KuisJawaban::findOne($kuis_jawaban_id);
+                $kuisJawaban->skor = $kuis_jawaban_value;
+                $kuisJawaban->save(false);
+            }
+            $model->status = 'Selesai Penilaian';
+            $model->save(false);
+            Yii::$app->session->setFlash('success', "Penilaian Berhasil di Simpan!");
+            return $this->redirect(['jadwal/hasil-kuis', 'id' => $id,'jadwal_id'=>$jadwal_id]);
+        }
+        return $this->render('hasil-kuis',[
+            'model' => $model,
+            'jadwal_id' => $jadwal_id,
+        ]);
+    }
+
     function actionSimpanJawaban($soal_id,$jawaban_id=0,$jawaban='')
     {
         $soal = Materi::findOne($soal_id);

@@ -126,6 +126,7 @@ div[data-oembed-url] div {
                             <tr>
                                 <th>Mahasiswa</th>
                                 <th>Status</th>
+                                <th>Aksi</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -135,6 +136,11 @@ div[data-oembed-url] div {
                             <tr>
                                 <td><?=$p->mahasiswa->nama?></td>
                                 <td><?=$p->status?></td>
+                                <td>
+                                    <?php if($p->status!='Sedang Mengerjakan'): ?>
+                                    <a href="<?=Url::to(['jadwal/hasil-kuis','id'=>$p->id,'jadwal_id'=>$model->id])?>">Lihat</a>
+                                    <?php endif ?>
+                                </td>
                             </tr>
                             <?php endforeach ?>
                             </tbody>
