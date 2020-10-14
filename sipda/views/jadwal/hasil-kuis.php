@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Kuis;
+use common\models\KuisJawaban;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -40,34 +41,44 @@ div[data-oembed-url] div {
             <thead>
             <tr>
                 <th>Soal</th>
-                <th>Jawaban Anda</th>
+                <th>Jawaban Mahasiswa</th>
             </tr>
             </thead>
             <tbody>
-            <?php $total_skor = 0; foreach($model->kuisJawabans as $jawaban): if($model->status == 'Selesai Penilaian') $total_skor+=$jawaban->skor;?>
+            <?php 
+            $total_skor = 0; 
+            foreach($materi->getChilds()->orderby(['no_urut'=>SORT_ASC])->all() as $soal): 
+                $jawaban = KuisJawaban::find()->where(['kuis_id'=>$model->id,'materi_id'=>$soal->id])->one();
+                if($model->status == 'Selesai Penilaian' && !empty($jawaban)) 
+                    $total_skor+=$jawaban->skor;
+            ?>
             <tr>
-                <td><?=$jawaban->materi->konten?></td>
+                <td><?=$soal->konten?></td>
                 <td>
-                <?=$jawaban->jawaban_konten?>
-                <p></p>
-                <?php if($jawaban->jawaban_id != NULL): ?>
-                    <span class="label <?=$jawaban->skor == 1 ? 'label-success' : 'label-danger'?>">Skor : <?=$jawaban->skor?></span>
-                <?php else: ?>
-                    <?php if($model->status == 'Selesai Penilaian'): ?>
-                    <span class="label <?=$jawaban->skor == 0 ? 'label-danger' : 'label-success'?>">Skor : <?=$jawaban->skor?></span>
+                    <?php if(!empty($jawaban)): ?>
+                        <?=$jawaban->jawaban_konten?>
+                        <p></p>
+                        <?php if($jawaban->jawaban_id != NULL): ?>
+                            <span class="label <?=$jawaban->skor == 1 ? 'label-success' : 'label-danger'?>">Skor : <?=$jawaban->skor?></span>
+                        <?php else: ?>
+                            <?php if($model->status == 'Selesai Penilaian'): ?>
+                            <span class="label <?=$jawaban->skor == 0 ? 'label-danger' : 'label-success'?>">Skor : <?=$jawaban->skor?></span>
+                            <?php else: ?>
+                            <div class="form-group">
+                                <input type="number" class="form-control" step="any" min="0" max="1" name="kuis_jawaban[<?=$jawaban->id?>]" value="0">
+                            </div>
+                            <?php endif ?>
+                        <?php endif ?>
                     <?php else: ?>
-                    <div class="form-group">
-                        <input type="number" class="form-control" step="any" min="0" max="1" name="kuis_jawaban[<?=$jawaban->id?>]" value="0">
-                    </div>
+                        <span class="label label-danger">Tidak ada jawaban</span>
                     <?php endif ?>
-                <?php endif ?>
                 </td>
             </tr>
             <?php endforeach ?>
             <?php if($model->status == 'Selesai Penilaian'): ?>
             <tr>
                 <td><b>Total Skor</b></td>
-                <td><b><?=$total_skor?></b></td>
+                <td><b><?=number_format($total_skor/count($materi->childs),2)?></b></td>
             </tr>
             <?php endif ?>
             </tbody>

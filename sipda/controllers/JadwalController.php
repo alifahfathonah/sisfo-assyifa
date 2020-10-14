@@ -155,6 +155,7 @@ class JadwalController extends Controller
     {
         $this->layout = 'main-materi';
         $model = Kuis::findOne($id);
+        $materi = Materi::findOne($model->materi_id);
         if(isset($_POST['kuis_jawaban']))
         {
             foreach($_POST['kuis_jawaban'] as $kuis_jawaban_id => $kuis_jawaban_value)
@@ -170,6 +171,7 @@ class JadwalController extends Controller
         }
         return $this->render('hasil-kuis',[
             'model' => $model,
+            'materi' => $materi,
             'jadwal_id' => $jadwal_id,
         ]);
     }

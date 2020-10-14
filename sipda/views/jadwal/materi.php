@@ -1,6 +1,7 @@
 <?php
 
 use common\models\Kuis;
+use common\models\KuisJawaban;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
@@ -159,7 +160,6 @@ div[data-oembed-url] div {
             <p>Untuk melanjutkan kuis, klik <a href="<?=Url::to(['jadwal/mulai-kuis','id'=>$materi->id,'jadwal_id'=>$model->id])?>">disini</a>.</p>
             <?php else: ?>
             <p>Anda telah selesai mengerjakan kuis. berikut adalah rangkuman kuis anda.</p>
-
             <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -168,13 +168,35 @@ div[data-oembed-url] div {
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($kuis->kuisJawabans as $jawaban): ?>
+                <?php 
+                $total_skor = 0; 
+                foreach($materi->getChilds()->orderby(['no_urut'=>SORT_ASC])->all() as $soal): 
+                    $jawaban = KuisJawaban::find()->where(['kuis_id'=>$kuis->id,'materi_id'=>$soal->id])->one();
+                    if($kuis->status == 'Selesai Penilaian' && !empty($jawaban)) 
+                        $total_skor+=$jawaban->skor;
+                ?>
                 <tr>
-                    <td><?=$jawaban->materi->konten?></td>
-                    <td><?=$jawaban->jawaban_konten?></td>
+                    <td><?=$soal->konten?></td>
+                    <td>
+                        <?php if(!empty($jawaban)): ?>
+                            <?=$jawaban->jawaban_konten?>
+                            <p></p>
+                            <?php if($kuis->status == 'Selesai Penilaian'): ?>
+                                <span class="label <?=$jawaban->skor > 0 ? 'label-success' : 'label-danger'?>">Skor : <?=$jawaban->skor?></span>
+                            <?php endif ?>
+                        <?php else: ?>
+                            <span class="label label-danger">Tidak ada jawaban</span>
+                        <?php endif ?>
+                    </td>
                 </tr>
-                </tbody>
                 <?php endforeach ?>
+                <?php if($kuis->status == 'Selesai Penilaian'): ?>
+                <tr>
+                    <td><b>Total Skor</b></td>
+                    <td><b><?=number_format($total_skor/count($materi->childs),2)?></b></td>
+                </tr>
+                <?php endif ?>
+                </tbody>
             </table>
             <?php endif ?>
         <?php endif ?>
