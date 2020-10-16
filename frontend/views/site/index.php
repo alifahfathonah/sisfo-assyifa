@@ -18,7 +18,7 @@ $this->title = 'Sistem Informasi STIKES As-Syifa';
                     <?=Yii::$app->user->identity->dosen->jenis_kelamin?><br>
                     <?php elseif(Yii::$app->user->can('Mahasiswa')): ?>
                     <img src="<?=Yii::$app->params['frontend_url']?>/images/<?=Yii::$app->user->identity->mahasiswa->jenis_kelamin?>.jpg" alt="<?=Yii::$app->user->identity->mahasiswa->nama?>" width="100%">
-                    <b><?=Yii::$app->user->identity->mahasiswa->nama?></b> - <?=Yii::$app->user->identity->mahasiswa->NIDN?><br>
+                    <b><?=Yii::$app->user->identity->mahasiswa->nama?></b> - <?=Yii::$app->user->identity->mahasiswa->NIM?><br>
                     <?=Yii::$app->user->identity->mahasiswa->jenis_kelamin?>
                     <?php endif ?>
                 </center>
