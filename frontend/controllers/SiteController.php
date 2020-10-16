@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use common\models\Application;
+use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -83,6 +84,34 @@ class SiteController extends Controller
 
         return $this->render('index',[
             'applications' => $applications
+        ]);
+    }
+
+    public function actionChangePassword()
+    {
+        $model = User::findOne(Yii::$app->user->identity->id);
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
+            Yii::$app->session->addFlash("success", "Update Password Berhasil");
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('change-password',[
+            'model' => $model
+        ]);
+    }
+
+    public function actionChangeEmail()
+    {
+        $model = User::findOne(Yii::$app->user->identity->id);
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
+            Yii::$app->session->addFlash("success", "Update Email Berhasil");
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('change-email',[
+            'model' => $model
         ]);
     }
 

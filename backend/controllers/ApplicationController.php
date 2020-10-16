@@ -116,7 +116,6 @@ class ApplicationController extends Controller
                 $model->icon = $old_logo;
             $model->save();
             return $this->redirect(['view', 'id' => $model->id]);
-            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
