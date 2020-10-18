@@ -2,8 +2,9 @@
 
 namespace sipda\controllers;
 
-use common\models\Absensi;
 use Yii;
+use common\models\Absensi;
+use common\models\VwJadwal;
 use common\models\AbsensiMahasiswa;
 use common\models\AbsensiMahasiswaSearch;
 use yii\web\Controller;
@@ -69,6 +70,20 @@ class AbsensiMahasiswaController extends Controller
      */
     public function actionCreate($absensi_id)
     {
+        $absensi = Absensi::findOne($absensi_id);
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
+                    ->all();
+
+        $jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+        if(!in_array($absensi->jadwal_id,$jadwal))
+        {
+            Yii::$app->session->setFlash('error', "Absensi tidak bisa di update!");
+            return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+        }
 
         $request = Yii::$app->request;
         foreach($request->post('status') as $key => $value)

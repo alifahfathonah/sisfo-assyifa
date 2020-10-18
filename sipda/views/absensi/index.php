@@ -43,7 +43,29 @@ $this->params['breadcrumbs'][] = $this->title;
             'pertemuan',
             'tanggal',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'buttons' => [
+                    'update' => function($url, $model) use ($jadwal) {
+                        if(!in_array($model->jadwal_id,$jadwal)) return '';
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-pencil"></span>',
+                            $url
+                        );
+                    },
+                    'delete' => function($url, $model) use ($jadwal) {
+                        if(!in_array($model->jadwal_id,$jadwal)) return '';
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-trash"></span>',
+                            $url,
+                            [
+                                'data-method' => 'post',
+                                'data-confirm' => 'are you sure to delete this item ?'
+                            ]
+                        );
+                    }
+                ]
+            ],
         ],
     ]); ?>
 

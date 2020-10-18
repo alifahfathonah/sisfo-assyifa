@@ -41,9 +41,19 @@ class AbsensiController extends Controller
         $searchModel = new AbsensiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
+                    ->all();
+
+        $jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'jadwal' => $jadwal,
         ]);
     }
 
@@ -55,8 +65,18 @@ class AbsensiController extends Controller
      */
     public function actionView($id)
     {
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
+                    ->all();
+
+        $jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'jadwal' => $jadwal,
         ]);
     }
 
@@ -99,14 +119,19 @@ class AbsensiController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $jadwal = Jadwal::find()
-                    ->joinWith('dosen')
-                    ->where(['dosen.id'=>Yii::$app->user->identity->Id])
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
                     ->all();
 
-        $jadwal = ArrayHelper::map($jadwal,'id',function($model){
-            return $model->hari.' - '.$model->dosenPengampuh->mataKuliah->nama.' - '.$model->dosenPengampuh->kelas->nama;
+        $jadwal = ArrayHelper::map($jadwal,'jadwal_id',function($model){
+            return $model->hari.' - '.$model->nama_mata_kuliah.' - '.$model->kelas->nama;
         });
+
+        $key_jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+        if(!in_array($model->jadwal_id,$key_jadwal)) return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -127,7 +152,16 @@ class AbsensiController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
+                    ->all();
+        $key_jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+        if(!in_array($model->jadwal_id,$key_jadwal)) return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+        $model->delete();
 
         return $this->redirect(['index']);
     }
