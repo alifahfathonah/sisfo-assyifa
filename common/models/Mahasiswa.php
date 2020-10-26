@@ -106,4 +106,15 @@ class Mahasiswa extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Prodi::className(), ['id' => 'prodi_id']);
     }
+
+    public function getPembimbings()
+    {
+        return $this->hasMany(Dosen::className(), ['id' => 'dosen_id'])
+                ->viaTable('dosen_pembimbing',['mahasiswa_id'=>'id']);
+    }
+
+    public function getDosenPembimbings()
+    {
+        return $this->hasMany(DosenPembimbing::className(), ['mahasiswa_id'=>'id']);
+    }
 }

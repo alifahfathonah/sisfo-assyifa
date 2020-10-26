@@ -52,6 +52,14 @@ $this->title = 'Sistem Informasi STIKES As-Syifa';
 
                 <div class="body-content">
                     <div class="row">
+                        <div class="col-lg-4">
+                            <center>
+                                <h4>Penyimpanan</h4>
+                                <img src="<?=Yii::$app->params['backend_url']?>/images/cloud.webp" alt="Penyimpanan" width="100px">
+                                <br><br>
+                                <p><a class="btn btn-default" href="<?=Url::to(['site/penyimpanan'])?>">Ke Aplikasi &raquo;</a></p>
+                            </center>
+                        </div>
                         <?php foreach($applications as $app): ?>
                         <div class="col-lg-4">
                             <center>

@@ -3,6 +3,9 @@ namespace frontend\controllers;
 
 use common\models\Application;
 use common\models\User;
+use common\models\Penyimpanan;
+use common\models\PenyimpananSearch;
+use common\models\ImportFile;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -48,6 +51,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'logout' => ['post'],
+                    'hapus-penyimpanan' => ['post'],
                 ],
             ],
         ];
@@ -256,6 +260,49 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    public function actionPenyimpanan()
+    {
+        $model = new ImportFile;
+        $searchModel = new PenyimpananSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        $queryParams['PenyimpananSearch']['user_id'] = Yii::$app->user->identity->id;
+        $dataProvider = $searchModel->search($queryParams);
+
+        if ($model->load(Yii::$app->request->post())){
+            $uploadedFiles = \yii\web\UploadedFile::getInstances($model,'file');
+            foreach($uploadedFiles as $file)
+            {
+                $filename = strtotime(date('Y-m-d H:i:s')).'.'. $file->extension;
+                $file->saveAs('uploads/' . $filename);
+                $penyimpanan = new Penyimpanan;
+                $penyimpanan->user_id = Yii::$app->user->identity->id;
+                $penyimpanan->nama = $file->baseName;
+                $penyimpanan->berkas = $filename;
+                $penyimpanan->save();
+            }
+            Yii::$app->session->setFlash('success', "Berkas Berhasil di Upload!");
+            return $this->redirect(['site/penyimpanan']);
+        }
+
+        return $this->render('penyimpanan',[
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider
+        ]);
+    }
+
+    public function actionHapusPenyimpanan($id)
+    {
+        $penyimpanan = Penyimpanan::findOne(['id'=>$id,'user_id'=>Yii::$app->user->identity->id]);
+        if(empty($penyimpanan))
+            Yii::$app->session->setFlash('error', "Anda tidak berhak menghapus berkas ini!");
+        else
+        {
+            $penyimpanan->delete();
+            Yii::$app->session->setFlash('success', "Berkas Berhasil di hapus");
+        }
+        return $this->redirect(['site/penyimpanan']);
     }
 
     /**

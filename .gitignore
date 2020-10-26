@@ -4,6 +4,7 @@
 /yii_test.bat
 
 backend/web/uploads/*
+frontend/web/uploads/*
 
 # phpstorm project files
 .idea
