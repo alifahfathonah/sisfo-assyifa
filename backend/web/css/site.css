@@ -167,3 +167,17 @@ input[type=file].form-control {
     content: "\f2ed";
     color: var(--danger);
 }
+ul.pagination li {
+    display: inline-block;
+    border:1px solid #ddd;
+    border-left:0px;
+    padding:5px;
+}
+
+ul.pagination li:first-child {
+    border-left:1px solid #ddd;
+}
+
+ul.pagination li a {
+    padding:10px;
+}

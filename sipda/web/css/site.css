@@ -118,19 +118,3 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
-
-
-ul.pagination li {
-    display: inline-block;
-    border:1px solid #ddd;
-    border-left:0px;
-    padding:5px;
-}
-
-ul.pagination li:first-child {
-    border-left:1px solid #ddd;
-}
-
-ul.pagination li a {
-    padding:10px;
-}
