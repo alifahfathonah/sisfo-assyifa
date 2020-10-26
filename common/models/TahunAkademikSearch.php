@@ -17,8 +17,8 @@ class TahunAkademikSearch extends TahunAkademik
     public function rules()
     {
         return [
-            [['id', 'tahun', 'periode'], 'integer'],
-            [['status'], 'safe'],
+            [['id'], 'integer'],
+            [['status', 'tahun', 'periode'], 'safe'],
         ];
     }
 
