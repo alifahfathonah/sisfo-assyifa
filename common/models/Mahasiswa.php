@@ -95,6 +95,12 @@ class Mahasiswa extends \yii\db\ActiveRecord
         return $this->hasOne(Kelas::className(), ['id' => 'kelas_id'])
                 ->viaTable('mahasiswa_kelas',['mahasiswa_id'=>'id']);
     }
+    
+    public function getAngkatan()
+    {
+        return $this->hasOne(Angkatan::className(), ['id' => 'angkatan_id'])
+                ->viaTable('mahasiswa_angkatan',['mahasiswa_id'=>'id']);
+    }
 
     public function getProdi()
     {

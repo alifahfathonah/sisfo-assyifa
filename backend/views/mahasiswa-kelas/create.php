@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model common\models\MahasiswaKelas */
 
 $this->title = 'Tambah Mahasiswa Kelas '.$model->kelas->nama;
-$this->params['breadcrumbs'][] = ['label' => 'Mahasiswa Kelas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Mahasiswa Kelas', 'url' => ['index','MahasiswaKelasSearch[kelas_id]'=>$model->kelas_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="mahasiswa-kelas-create">
@@ -14,7 +14,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="card-body">
     <?= $this->render('_form', [
         'model' => $model,
-        'mahasiswa' => $mahasiswa,
+        'angkatan' => $angkatan,
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
     ]) ?>
 
 </div>

@@ -11,6 +11,7 @@ use common\models\Mahasiswa;
  */
 class MahasiswaSearch extends Mahasiswa
 {
+    public $angkatan,$not_in_mahasiswa_id;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +19,7 @@ class MahasiswaSearch extends Mahasiswa
     {
         return [
             [['id', 'user_id'], 'integer'],
-            [['NIM', 'nama', 'jenis_kelamin', 'status', 'created_at'], 'safe'],
+            [['angkatan','prodi_id','not_in_mahasiswa_id','NIM', 'nama', 'jenis_kelamin', 'status', 'created_at'], 'safe'],
         ];
     }
 
@@ -43,6 +44,7 @@ class MahasiswaSearch extends Mahasiswa
         $query = Mahasiswa::find();
 
         // add conditions that should always apply here
+        $query->joinWith(['angkatan']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -60,13 +62,17 @@ class MahasiswaSearch extends Mahasiswa
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'prodi_id' => $this->prodi_id,
             'created_at' => $this->created_at,
         ]);
 
         $query->andFilterWhere(['like', 'NIM', $this->NIM])
+            ->andFilterWhere(['like', 'angkatan.tahun', $this->angkatan])
             ->andFilterWhere(['like', 'nama', $this->nama])
             ->andFilterWhere(['like', 'jenis_kelamin', $this->jenis_kelamin])
             ->andFilterWhere(['like', 'status', $this->status]);
+
+        $query->andFilterWhere(['not in','mahasiswa.id',$this->not_in_mahasiswa_id]);
 
         return $dataProvider;
     }

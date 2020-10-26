@@ -57,4 +57,9 @@ class MataKuliah extends \yii\db\ActiveRecord
     {
         return $this->hasMany(MataKuliahProdi::className(), ['mata_kuliah_id' => 'id']);
     }
+
+    public function getProdi()
+    {
+        return $this->hasOne(MataKuliahProdi::className(), ['mata_kuliah_id' => 'id']);
+    }
 }

@@ -50,6 +50,15 @@ class AbsensiMahasiswaController extends Controller
         ]);
     }
 
+    public function actionCetak($absensi_id)
+    {
+        $model = Absensi::findOne($absensi_id);
+        
+        return $this->renderPartial('cetak', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Displays a single AbsensiMahasiswa model.
      * @param integer $id

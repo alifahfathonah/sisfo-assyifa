@@ -36,6 +36,8 @@ $this->params['breadcrumbs'][] = "Mahasiswa";
 
             ['class' => 'yii\grid\ActionColumn',
                 'buttons' => [
+                    'view' => function($url){ return ''; },
+                    'update' => function($url){ return ''; },
                     'delete' => function($url,$model) {
                         return Html::a('<i class="fa fa-trash"></i>', $url, [
                             'title' => Yii::t('app', 'delete'),

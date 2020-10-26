@@ -14,8 +14,8 @@ class m200926_173530_create_tahun_akademik_table extends Migration
     {
         $this->createTable('{{%tahun_akademik}}', [
             'id' => $this->primaryKey(),
-            'tahun' => $this->integer(),
-            'periode' => $this->integer(),
+            'tahun' => $this->string(),
+            'periode' => $this->string(),
             'status' => $this->string(),
         ]);
     }

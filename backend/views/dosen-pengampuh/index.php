@@ -34,12 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'mata_kuliah',
                 'value'=>function($model){
-                    return $model->mataKuliah->nama;
+                    return $model->mataKuliah->kode.' '.$model->mataKuliah->nama;
                 }
             ],
 
             ['class' => 'yii\grid\ActionColumn',
                 'buttons' => [
+                    'view' => function($url){
+                        return '';
+                    },
                     'update' =>  function($url,$model) {
                         return Html::a('<i class="fa fa-pencil-alt"></i>', $url.'&kelas_id='.$model->kelas_id, [
                             'title' => Yii::t('app', 'update')

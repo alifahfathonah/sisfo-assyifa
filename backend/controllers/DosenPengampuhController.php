@@ -71,12 +71,23 @@ class DosenPengampuhController extends Controller
 
         $mata_kuliah = $model->kelas->prodi->getMataKuliahProdis()->where(['semester'=>$model->kelas->semester])->all();
         $mata_kuliah = ArrayHelper::map($mata_kuliah,'id',function($model){
-            return $model->mataKuliah->nama;
+            return $model->mataKuliah->kode.' '.$model->mataKuliah->nama;
         });
         $dosen = Dosen::find()->all();
         $dosen = ArrayHelper::map($dosen,'id','nama');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())){
+            $dosens = $model->dosen_id;
+            $mata_kuliah_prodi_id = $model->mata_kuliah_prodi_id;
+            foreach($dosens as $dosen)
+            {
+                $model = new DosenPengampuh;
+                $model->kelas_id = $kelas_id;
+                $model->dosen_id = $dosen;
+                $model->mata_kuliah_prodi_id = $mata_kuliah_prodi_id;
+                $model->save();
+            }
+            //$model->save()
             return $this->redirect(['index', 'DosenPengampuhSearch[kelas_id]' => $kelas_id]);
         }
 
@@ -126,9 +137,11 @@ class DosenPengampuhController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $kelas_id = $model->kelas_id;
+        $model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'DosenPengampuhSearch[kelas_id]' => $kelas_id]);
     }
 
     /**

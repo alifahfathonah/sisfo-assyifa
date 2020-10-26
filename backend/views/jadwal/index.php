@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'=>'mata_kuliah',
                 'value'=>function($model){
-                    return $model->dosenPengampuh->mataKuliah->nama;
+                    return $model->dosenPengampuh->mataKuliah->kode.' '.$model->dosenPengampuh->mataKuliah->nama;
                 }
             ],
             [

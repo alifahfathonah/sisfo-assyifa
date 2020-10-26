@@ -11,7 +11,7 @@ use common\models\Absensi;
  */
 class AbsensiSearch extends Absensi
 {
-    public $jadwal;
+    public $jadwal,$in_jadwal;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +19,7 @@ class AbsensiSearch extends Absensi
     {
         return [
             [['id', 'jadwal_id', 'pertemuan'], 'integer'],
-            [['jadwal','tanggal', 'created_at'], 'safe'],
+            [['in_jadwal','jadwal','tanggal', 'created_at'], 'safe'],
         ];
     }
 
@@ -68,6 +68,7 @@ class AbsensiSearch extends Absensi
         ]);
 
         $query->andFilterWhere(['like','jadwal.hari',$this->jadwal]);
+        $query->andFilterWhere(['in','jadwal_id',$this->in_jadwal]);
 
         return $dataProvider;
     }

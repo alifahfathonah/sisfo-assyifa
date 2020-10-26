@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Angkatan;
+use common\models\MahasiswaSearch;
 use common\models\MahasiswaKelas;
 use common\models\MahasiswaKelasSearch;
 use common\models\TahunAkademik;
@@ -66,19 +68,44 @@ class MahasiswaKelasController extends Controller
      */
     public function actionCreate($kelas_id)
     {
+        $angkatan = Angkatan::find()->all();
+        $angkatan = ArrayHelper::map($angkatan,'id','tahun');
+        array_unshift($angkatan,'Semua');
+
         $model = new MahasiswaKelas();
         $model->kelas_id = $kelas_id;
         $model->tahun_akademik_id = $model->kelas->tahun_akademik_id;
 
-        $mahasiswa = ArrayHelper::map($model->kelas->prodi->mahasiswas,'id','nama');
+        $list_mahasiswa = MahasiswaKelas::find()->where(['kelas_id'=>$kelas_id])->all();
+        $list_mahasiswa = ArrayHelper::map($list_mahasiswa,'mahasiswa_id','mahasiswa_id');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $searchModel = new MahasiswaSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        if(isset($queryParams['MahasiswaSearch']['angkatan']) && $queryParams['MahasiswaSearch']['angkatan'] == 0)
+            unset($queryParams['MahasiswaSearch']['angkatan']);
+        $queryParams['MahasiswaSearch']['not_in_mahasiswa_id'] = $list_mahasiswa;
+        $queryParams['MahasiswaSearch']['prodi'] = $model->kelas->prodi_id;
+        $dataProvider = $searchModel->search($queryParams);
+
+        if ($model->load(Yii::$app->request->post())) {
+            // $model->save()
+            $post = Yii::$app->request->post();
+            foreach($post['mahasiswa'] as $mahasiswa)
+            {
+                $m = new MahasiswaKelas;
+                $m->kelas_id = $kelas_id;
+                $m->tahun_akademik_id = $model->kelas->tahun_akademik_id;
+                $m->mahasiswa_id = $mahasiswa;
+                $m->save();
+            }
             return $this->redirect(['index', 'MahasiswaKelasSearch[kelas_id]' => $kelas_id]);
         }
 
         return $this->render('create', [
             'model' => $model,
-            'mahasiswa' => $mahasiswa,
+            'angkatan' => $angkatan,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -116,9 +143,11 @@ class MahasiswaKelasController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $kelas_id = $model->kelas_id;
+        $model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index','MahasiswaKelasSearch[kelas_id]'=>$kelas_id]);
     }
 
     /**

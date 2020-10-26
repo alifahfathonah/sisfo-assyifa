@@ -2,8 +2,9 @@
 
 namespace sipda\controllers;
 
-use common\models\DosenPengampuh;
 use Yii;
+use common\models\DosenPengampuh;
+use common\models\ImportFile;
 use common\models\Materi;
 use common\models\MateriItem;
 use common\models\MateriSearch;
@@ -115,6 +116,83 @@ class MateriController extends Controller
             'jadwal_id' => $jadwal_id,
             // 'dosen_mata_kuliah' => $dosen_mata_kuliah,
         ]);
+    }
+
+    public function actionImports($dosen_pengampuh_id,$jadwal_id,$parent_id)
+    {
+        $model = new ImportFile;
+        if ($model->load(Yii::$app->request->post())){
+            $uploadedFile = \yii\web\UploadedFile::getInstance($model,'file');
+            $extension    = $uploadedFile->extension;
+            if($extension=='xlsx'){
+                $inputFileType = 'Xlsx';
+            }else{
+                $inputFileType = 'Xls';
+            }
+            $reader     = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($inputFileType);
+                
+            $spreadsheet = $reader->load($uploadedFile->tempName);
+            $worksheet   = $spreadsheet->getActiveSheet();
+            $highestRow  = $worksheet->getHighestRow();
+            $highestColumn = $worksheet->getHighestColumn();
+            $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+                
+            //inilah looping untuk membaca cell dalam file excel,perkolom
+                
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                for ($row = 2; $row <= $highestRow; $row++) { //$row = 2 artinya baris kedua yang dibaca dulu(header kolom diskip disesuaikan saja)
+                    $no = $row-1;
+                    // buat soal
+                    $materi = new Materi();
+                    $materi->dosen_pengampuh_id = $dosen_pengampuh_id;
+                    $materi->status = "Publish";
+                    $materi->no_urut = $no;
+                    $materi->tipe = "Soal";
+                    $materi->tipe_konten = "Text";
+                    $materi->judul = $worksheet->getCellByColumnAndRow(1, $row)->getValue();
+                    $materi->konten = "<p>".$worksheet->getCellByColumnAndRow(2, $row)->getValue()."</p>";
+                    $materi->save();
+
+                    // set parent 
+                    $materiItem = new MateriItem;
+                    $materiItem->parent_id = $parent_id;
+                    $materiItem->child_id = $materi->id;
+                    $materiItem->save();
+
+                    // buat jawaban
+                    $jumlah_jawaban = $worksheet->getCellByColumnAndRow(3, $row)->getValue();
+                    $jawaban_benar = $worksheet->getCellByColumnAndRow(4, $row)->getValue()-1;
+                    $start_index = 5;
+                    for($i=$start_index;$i<$start_index+$jumlah_jawaban;$i++)
+                    {
+                        // jawaban
+                        $jawaban = new Materi();
+                        $jawaban->status = "Publish";
+                        $jawaban->tipe = $i == $start_index+$jawaban_benar ? "Jawaban Benar" : "Jawaban Salah";
+                        $jawaban->tipe_konten = "Text";
+                        $jawaban->judul = "Jawaban";
+                        $jawaban->konten = "<p>".$worksheet->getCellByColumnAndRow($i, $row)->getValue()."</p>";
+                        $jawaban->save();
+
+                        // save jawaban to post
+                        $soaltem = new MateriItem;
+                        $soaltem->parent_id = $materi->id;
+                        $soaltem->child_id = $jawaban->id;
+                        $soaltem->save();
+                    }
+                    //for ($col = 1; $col <= $highestColumnIndex; ++$col) {
+                    // echo $worksheet->getCellByColumnAndRow(1, $row)->getValue(); //3 artinya kolom ke3
+                    // $kolom10 = $worksheet->getCellByColumnAndRow(10, $row)->getValue(); // 10 artinya kolom 10
+                }
+                $transaction->commit();
+                Yii::$app->session->addFlash("success", "Import Soal Berhasil");
+            } catch (\Throwable $th) {
+                throw $th;
+                $transaction->rollback();
+            }
+            return $this->redirect(['jadwal/materi','id'=>$jadwal_id]);
+        }
     }
 
     public function actionBuatSoal($dosen_pengampuh_id, $jadwal_id, $parent_id)

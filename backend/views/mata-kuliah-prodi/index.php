@@ -38,7 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute'=>'prodi',
-                'value'=>'prodi.nama'
+                'value'=>function($model){
+                    return $model->prodi->jenjang.' '.$model->prodi->nama;
+                }
             ],
             'semester',
             'status',

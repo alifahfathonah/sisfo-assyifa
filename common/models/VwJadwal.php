@@ -67,4 +67,9 @@ class VwJadwal extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Kelas::className(), ['id' => 'kelas_id']);
     }
+
+    public function getMataKuliah()
+    {
+        return $this->hasOne(MataKuliah::className(), ['id' => 'mata_kuliah_id']);
+    }
 }

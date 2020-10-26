@@ -33,7 +33,7 @@ div[data-oembed-url] div {
     </div> -->
 
     <div class="col-sm-12">
-        <?php if($model->status == 'Selesai'): ?>
+        <?php if($model->status != 'Selesai Penilaian'): ?>
         <form method="post">
         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
         <?php endif ?>
@@ -83,7 +83,7 @@ div[data-oembed-url] div {
             <?php endif ?>
             </tbody>
         </table>
-        <?php if($model->status == 'Selesai'): ?>
+        <?php if($model->status != 'Selesai Penilaian'): ?>
         <button class="btn btn-success">Simpan Penilaian</button>
         </form>
         <?php endif ?>

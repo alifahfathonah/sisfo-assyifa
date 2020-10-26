@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
+            'angkatan.tahun',
             'NIM',
             'nama',
             'jenis_kelamin',

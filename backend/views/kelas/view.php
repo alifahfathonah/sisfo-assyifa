@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute'=>'program studi',
                 'value' => function($model)
                 {
-                    return $model->prodi->nama;
+                    return $model->prodi->jenjang.' '.$model->prodi->nama;
                 }
             ],
             'kode',

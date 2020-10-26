@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Mahasiswa;
+use common\models\Angkatan;
+use common\models\MahasiswaAngkatan;
 use common\models\MahasiswaSearch;
 use common\models\Prodi;
 use common\models\User;
@@ -69,10 +71,13 @@ class MahasiswaController extends Controller
     {
         $model = new Mahasiswa();
         $user  = new User();
+        $model_angkatan  = new MahasiswaAngkatan();
+        $angkatan  = Angkatan::find()->all();
+        $angkatan  = ArrayHelper::map($angkatan,'id','tahun');
         $prodi = Prodi::find()->all();
         $prodi = ArrayHelper::map($prodi,'id','nama');
 
-        if($user->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post()) && $user->save())
+        if($user->load(Yii::$app->request->post()) && $model_angkatan->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post()) && $user->save())
         {
             $model->user_id = $user->id;
 
@@ -80,7 +85,9 @@ class MahasiswaController extends Controller
             $authorRole = $auth->getRole('Mahasiswa');
             $auth->assign($authorRole, $user->id);
 
-            if ($model->save()) {   
+            $model_angkatan->mahasiswa_id = $model->id;
+            
+            if ($model->save() && $model_angkatan->save()) {   
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
@@ -89,6 +96,8 @@ class MahasiswaController extends Controller
             'model' => $model,
             'user' => $user,
             'prodi' => $prodi,
+            'angkatan' => $angkatan,
+            'model_angkatan' => $model_angkatan,
         ]);
     }
 
@@ -103,10 +112,18 @@ class MahasiswaController extends Controller
     {
         $model = $this->findModel($id);
         $user = User::findOne($model->user_id);
+        $model_angkatan  = MahasiswaAngkatan::findOne(['mahasiswa_id'=>$id]);
+        if(empty($model_angkatan))
+        {
+            $model_angkatan = new MahasiswaAngkatan;
+            $model_angkatan->mahasiswa_id = $id;
+        }
+        $angkatan  = Angkatan::find()->all();
+        $angkatan  = ArrayHelper::map($angkatan,'id','tahun');
         $prodi = Prodi::find()->all();
         $prodi = ArrayHelper::map($prodi,'id','nama');
 
-        if($user->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post()) && $user->save() && $model->save())
+        if($user->load(Yii::$app->request->post()) && $model_angkatan->load(Yii::$app->request->post()) && $model->load(Yii::$app->request->post()) && $user->save() && $model->save() && $model_angkatan->save())
         {
             $roles = Yii::$app->authManager->getRolesByUser(Yii::$app->user->getId());
             $roles = array_keys($roles);
@@ -125,6 +142,8 @@ class MahasiswaController extends Controller
             'model' => $model,
             'user' => $user,
             'prodi' => $prodi,
+            'angkatan' => $angkatan,
+            'model_angkatan' => $model_angkatan,
         ]);
     }
 

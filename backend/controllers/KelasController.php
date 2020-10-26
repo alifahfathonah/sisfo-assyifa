@@ -100,7 +100,9 @@ class KelasController extends Controller
     {
         $model = $this->findModel($id);
         $prodies = Prodi::find()->all();
-        $prodies = ArrayHelper::map($prodies,'id','nama');
+        $prodies = ArrayHelper::map($prodies,'id',function($model){
+            return $model->jenjang.' '.$model->nama;
+        });
 
         $tahun_akademik = TahunAkademik::find()->all();
         $tahun_akademik = ArrayHelper::map($tahun_akademik,'id',function($model){

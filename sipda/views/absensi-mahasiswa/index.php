@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -30,18 +31,19 @@ $this->params['breadcrumbs'][] = $this->title;
             <td><?=$mhs->NIM?></td>
             <td><?=$mhs->nama?></td>
             <td>
-            <?= Html::dropDownList('status['.$mhs->id.']',isset($absensi[$mhs->id]) ? $absensi[$mhs->id] : '',[
+            <?= Html::radioList('status['.$mhs->id.']',isset($absensi[$mhs->id]) ? $absensi[$mhs->id] : 'Tanpa Keterangan',[
                 'Hadir' => 'Hadir',
                 'Sakit' => 'Sakit',
                 'Izin' => 'Izin',
                 'Tanpa Keterangan' => 'Tanpa Keterangan',
-            ],['prompt'=>'- Pilih Status -','class'=>'form-control']) ?>
+            ]) ?>
             </td>
         </tr>
         <?php endforeach ?>
     </table>
 
     <button class="btn btn-success">Simpan</button>
+    <a href="<?= Url::to(['absensi-mahasiswa/cetak','absensi_id'=>$model->id]) ?>" class="btn btn-primary">Cetak</a>
 
     <?php ActiveForm::end(); ?>
     </div>

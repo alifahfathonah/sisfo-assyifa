@@ -72,13 +72,22 @@ div[data-oembed-url] div {
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab1success" data-toggle="tab">Soal</a></li>
                         <li><a href="#tab2success" data-toggle="tab">Peserta Kuis</a></li>
+                        <li><a href="#tab3success" data-toggle="tab">Waktu Kuis</a></li>
                     </ul>
             </div>
             <div class="panel-body">
                 <div class="tab-content">
                     <div class="tab-pane fade in active" id="tab1success">
+                        <div class="hidden">
+                        <form action="<?=Url::to(['materi/imports','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" enctype="multipart/form-data" id="formImport" method="post">
+                        <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                        <input type="hidden" name="ImportFile[tipe]" value="tipe" />
+                        <input type="file" name="ImportFile[file]" id="fileSoal" onchange="if(confirm('Apakah anda yakin akan mengimports soal ?')){formImport.submit()}">
+                        </form>
+                        </div>
                         <h4>Soal Kuis</h4>
                         <a href="<?=Url::to(['materi/buat-soal','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" class="btn btn-success">Buat Soal</a>
+                        <button class="btn btn-primary" onclick="fileSoal.click()">Import Soal</button>
                         <p></p>
                         <table class="table table-bordered">
                             <tr>
@@ -133,12 +142,20 @@ div[data-oembed-url] div {
                             <tbody>
                             <?php 
                             $peserta = Kuis::find()->where(['materi_id'=>$materi->id])->all();
+                            $now = strtotime(date('Y-m-d H:i:s'));
+                            $start_time = $materi->waktu?strtotime($materi->waktu->waktu_mulai):0;
+                            $finish_time = $materi->waktu?strtotime($materi->waktu->waktu_selesai):0;
                             foreach($peserta as $p): ?>
                             <tr>
                                 <td><?=$p->mahasiswa->nama?></td>
-                                <td><?=$p->status?></td>
                                 <td>
-                                    <?php if($p->status!='Sedang Mengerjakan'): ?>
+                                <?=$p->status?>
+                                <?php if($p->status == 'Sedang Mengerjakan' && $now > $finish_time): ?>
+                                <br>Waktu Kuis Telah Selesai
+                                <?php endif ?>
+                                </td>
+                                <td>
+                                    <?php if($p->status!='Sedang Mengerjakan' || $now > $finish_time): ?>
                                     <a href="<?=Url::to(['jadwal/hasil-kuis','id'=>$p->id,'jadwal_id'=>$model->id])?>">Lihat</a>
                                     <?php endif ?>
                                 </td>
@@ -147,57 +164,104 @@ div[data-oembed-url] div {
                             </tbody>
                         </table>
                     </div>
+                    <div class="tab-pane fade" id="tab3success">
+                        <h3>Waktu Kuis</h2>
+                        <div class="alert alert-success" role="alert" id="success" style="display:none">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            Waktu Kuis Berhasil disimpan
+                        </div>
+                        <input type="hidden" name="materi_id" id="materi_id" value="<?=$materi->id?>">
+                        <div class="form-group">
+                            <label for="">Batas Awal Mulai</label>
+                            <input type="datetime-local" name="batas_awal_mulai" id="batas_awal_mulai" class="form-control" value="<?=$materi->waktu?date('Y-m-d\TH:i',strtotime($materi->waktu->waktu_mulai)):''?>">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Batas Akhir Mulai</label>
+                            <input type="datetime-local" name="batas_akhir_mulai" id="batas_akhir_mulai" class="form-control" value="<?=$materi->waktu?date('Y-m-d\TH:i',strtotime($materi->waktu->waktu_selesai)):''?>">
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-success" onclick="simpanWaktuKuis(batas_awal_mulai.value,batas_akhir_mulai.value,materi_id.value)">Simpan</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <?php elseif($materi->tipe == 'Kuis' && Yii::$app->user->can('Mahasiswa')): ?>
             <?php
             $kuis = Kuis::find()->where(['materi_id'=>$materi->id,'mahasiswa_id'=>Yii::$app->user->identity->mahasiswa->id])->one();
-            if(empty($kuis)):
-            ?>
-            <p>Untuk memulai kuis, klik <a href="<?=Url::to(['jadwal/mulai-kuis','id'=>$materi->id,'jadwal_id'=>$model->id])?>">disini</a>.</p>
-            <?php elseif($kuis->status == 'Sedang Mengerjakan'): ?>
-            <p>Untuk melanjutkan kuis, klik <a href="<?=Url::to(['jadwal/mulai-kuis','id'=>$materi->id,'jadwal_id'=>$model->id])?>">disini</a>.</p>
-            <?php else: ?>
-            <p>Anda telah selesai mengerjakan kuis. berikut adalah rangkuman kuis anda.</p>
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>Soal</th>
-                    <th>Jawaban Anda</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php 
-                $total_skor = 0; 
-                foreach($materi->getChilds()->orderby(['no_urut'=>SORT_ASC])->all() as $soal): 
-                    $jawaban = KuisJawaban::find()->where(['kuis_id'=>$kuis->id,'materi_id'=>$soal->id])->one();
-                    if($kuis->status == 'Selesai Penilaian' && !empty($jawaban)) 
-                        $total_skor+=$jawaban->skor;
+            $now = strtotime(date('Y-m-d H:i:s'));
+            $start_time = $materi->waktu?strtotime($materi->waktu->waktu_mulai):0;
+            $finish_time = $materi->waktu?strtotime($materi->waktu->waktu_selesai):0;
+
+            // kondisi
+            // jika belum masuk waktu kuis
+            if($now < $start_time):
                 ?>
-                <tr>
-                    <td><?=$soal->konten?></td>
-                    <td>
-                        <?php if(!empty($jawaban)): ?>
-                            <?=$jawaban->jawaban_konten?>
-                            <p></p>
-                            <?php if($kuis->status == 'Selesai Penilaian'): ?>
-                                <span class="label <?=$jawaban->skor > 0 ? 'label-success' : 'label-danger'?>">Skor : <?=$jawaban->skor?></span>
+                <p>Kuis Belum di mulai.</p>
+                <p>Kuis akan di mulai pada <?=$materi->waktu?$materi->waktu->waktu_mulai:0?> dan selesai pada <?=$materi->waktu?$materi->waktu->waktu_selesai:0?> .</p>
+                <?php
+            elseif($now >= $start_time && $now <= $finish_time):
+                if(empty($kuis)):
+                ?>
+                <p>Untuk memulai kuis, klik <a href="<?=Url::to(['jadwal/mulai-kuis','id'=>$materi->id,'jadwal_id'=>$model->id])?>">disini</a>.</p>
+                <?php elseif($kuis->status == 'Sedang Mengerjakan'): ?>
+                <p>Untuk melanjutkan kuis, klik <a href="<?=Url::to(['jadwal/mulai-kuis','id'=>$materi->id,'jadwal_id'=>$model->id])?>">disini</a>.</p>
+                <?php elseif($kuis->status == 'Sedang Mengerjakan'): ?>
+                <p>Anda telah selesai mengerjakan kuis/p>
+                <?php endif;
+            elseif($now > $finish_time):
+                if(empty($kuis)):
+                ?>
+                <p>Anda tidak mengikuti kuis.</p>
+                <?php else: ?>
+                <p>Anda telah selesai mengerjakan kuis.</p>
+                <?php
+                endif; 
+                ?>
+            <?php
+            endif;
+            if((!empty($kuis) && $now > $finish_time) || (!empty($kuis) && $kuis->status != 'Sedang Mengerjakan')): ?>
+                <p>Berikut adalah rangkuman kuis anda.</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>Soal</th>
+                        <th>Jawaban Anda</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php 
+                    $total_skor = 0; 
+                    foreach($materi->getChilds()->orderby(['no_urut'=>SORT_ASC])->all() as $soal): 
+                        $jawaban = KuisJawaban::find()->where(['kuis_id'=>$kuis->id,'materi_id'=>$soal->id])->one();
+                        if($kuis->status == 'Selesai Penilaian' && !empty($jawaban)) 
+                            $total_skor+=$jawaban->skor;
+                    ?>
+                    <tr>
+                        <td><?=$soal->konten?></td>
+                        <td>
+                            <?php if(!empty($jawaban)): ?>
+                                <?=$jawaban->jawaban_konten?>
+                                <p></p>
+                                <?php if($kuis->status == 'Selesai Penilaian'): ?>
+                                    <span class="label <?=$jawaban->skor > 0 ? 'label-success' : 'label-danger'?>">Skor : <?=$jawaban->skor?></span>
+                                <?php endif ?>
+                            <?php else: ?>
+                                <span class="label label-danger">Tidak ada jawaban</span>
                             <?php endif ?>
-                        <?php else: ?>
-                            <span class="label label-danger">Tidak ada jawaban</span>
-                        <?php endif ?>
-                    </td>
-                </tr>
-                <?php endforeach ?>
-                <?php if($kuis->status == 'Selesai Penilaian'): ?>
-                <tr>
-                    <td><b>Total Skor</b></td>
-                    <td><b><?=number_format($total_skor/count($materi->childs),2)?></b></td>
-                </tr>
-                <?php endif ?>
-                </tbody>
-            </table>
+                        </td>
+                    </tr>
+                    <?php endforeach ?>
+                    <?php if($kuis->status == 'Selesai Penilaian'): ?>
+                    <tr>
+                        <td><b>Total Skor</b></td>
+                        <td><b><?=number_format($total_skor/count($materi->childs),2)?></b></td>
+                    </tr>
+                    <?php endif ?>
+                    </tbody>
+                </table>
             <?php endif ?>
         <?php endif ?>
 
@@ -218,3 +282,11 @@ div[data-oembed-url] div {
     <?php endif ?>
     </div>
 </div>
+<script>
+function simpanWaktuKuis(awal,akhir,id)
+{
+    document.getElementById('success').style.display = 'none';
+    fetch('/jadwal/simpan-waktu-kuis?awal='+awal+'&akhir='+akhir+'&id='+id)
+    document.getElementById('success').style.display = 'block';
+}
+</script>

@@ -9,6 +9,7 @@ use common\models\Kuis;
 use common\models\KuisJawaban;
 use common\models\Materi;
 use common\models\VwJadwalSearch;
+use common\models\WaktuKuis;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -204,6 +205,19 @@ class JadwalController extends Controller
         echo 'success';
         return;
 
+    }
+
+    public function actionSimpanWaktuKuis($id,$awal,$akhir)
+    {
+        $model = WaktuKuis::find()->where(['kuis_id'=>$id])->one();
+        if(empty($model))
+            $model = new WaktuKuis;
+        $model->waktu_mulai = $awal;
+        $model->waktu_selesai = $akhir;
+        $model->kuis_id = $id;
+        $model->save();
+        echo 'success';
+        return;
     }
 
     /**

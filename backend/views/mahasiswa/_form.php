@@ -34,6 +34,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($user, 'password_hash')->passwordInput() ?>
 
+    <?= $form->field($model_angkatan, 'angkatan_id')->dropDownList($angkatan,['prompt'=>'- Pilih Angkatan -']) ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

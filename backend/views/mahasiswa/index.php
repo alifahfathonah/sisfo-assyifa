@@ -24,7 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            
+            [
+                'attribute'=>'angkatan',
+                'value'=>'angkatan.tahun'
+            ],
             'NIM',
             'nama',
             'jenis_kelamin',

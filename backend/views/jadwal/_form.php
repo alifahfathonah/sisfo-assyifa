@@ -15,11 +15,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'dosen_pengampuh_id')->widget(Select2::classname(), [
         'data' => $dosen_mata_kuliah,
-        'options' => ['placeholder' => '- Pilih Dosen dan Mata Kuliah -'],
+        'options' => ['placeholder' => '- Pilih Mata Kuliah -'],
         'pluginOptions' => [
             'allowClear' => true
         ],
-    ]); ?>
+    ])->label('Mata Kuliah'); ?>
 
     <?= $form->field($model, 'hari')->textInput(['maxlength' => true]) ?>
 

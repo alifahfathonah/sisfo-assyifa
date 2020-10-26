@@ -70,7 +70,7 @@ class JadwalController extends Controller
 
         $dosen_mata_kuliah = DosenPengampuh::find()->all();
         $dosen_mata_kuliah = ArrayHelper::map($dosen_mata_kuliah,'id',function($model){
-            return $model->dosen->nama.' - '.$model->mataKuliah->nama.' - '.$model->kelas->nama;
+            return $model->dosen->nama.' - '.$model->mataKuliah->kode.' '.$model->mataKuliah->nama.' - '.$model->kelas->nama;
         });
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

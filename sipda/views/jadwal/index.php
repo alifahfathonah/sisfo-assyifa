@@ -44,6 +44,7 @@ $columns = ['class' => 'yii\grid\ActionColumn',
                 }
             ],
             'hari',
+            'mataKuliah.prodi.bobot_sks',
             'waktu_mulai',
             'waktu_selesai',
             //'created_at',

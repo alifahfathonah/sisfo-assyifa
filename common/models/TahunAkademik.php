@@ -33,8 +33,7 @@ class TahunAkademik extends \yii\db\ActiveRecord
     {
         return [
             [['tahun', 'periode', 'status'], 'required'],
-            [['tahun', 'periode'], 'integer'],
-            [['status'], 'string', 'max' => 255],
+            [['tahun', 'periode','status'], 'string', 'max' => 255],
         ];
     }
 

@@ -38,22 +38,66 @@ class AbsensiController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AbsensiSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         $jadwal = VwJadwal::find()
                     ->where([
                         'dosen_id'=>Yii::$app->user->identity->dosen->id,
                         'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
                     ])
                     ->all();
+        
+        $key_jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
 
         $jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+
+        $searchModel = new AbsensiSearch();
+        $queryParams = Yii::$app->request->queryParams;
+        $queryParams['AbsensiSearch']['in_jadwal'] = $key_jadwal;
+        $dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'jadwal' => $jadwal,
+        ]);
+    }
+
+    function actionCetak()
+    {
+        $model = new Absensi();
+        $jadwal = VwJadwal::find()
+                    ->where([
+                        'dosen_id'=>Yii::$app->user->identity->dosen->id,
+                        'tahun_akademik_id'=>!empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0
+                    ])
+                    ->all();
+        $jadwal = ArrayHelper::map($jadwal,'jadwal_id',function($model){
+            return $model->hari.' - '.$model->nama_mata_kuliah.' - '.$model->kelas->nama;
+        });
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model = $model->find()->where(['jadwal_id'=>$model->jadwal_id])->orderby(['pertemuan'=>SORT_ASC])->all();
+            if(!empty($model) && count($model) > 0)
+            {
+                $range = [
+                    'Hadir' => 2,
+                    'Izin'  => 1,
+                    'Sakit'  => 1,
+                    'Tanpa Keterangan'  => 0,
+                ];
+                $jadwal = $model[0]->jadwal;
+                $mahasiswa = $jadwal->dosenPengampuh->kelas->mahasiswas;
+                return $this->renderPartial('cetak',[
+                    'jadwal' => $jadwal,
+                    'mahasiswa' => $mahasiswa,
+                    'model' => $model,
+                    'range' => $range,
+                ]);
+            }
+        }
+
+        return $this->render('pra-cetak',[
+            'jadwal' => $jadwal,
+            'model' => $model,
         ]);
     }
 
@@ -126,11 +170,12 @@ class AbsensiController extends Controller
                     ])
                     ->all();
 
+        $key_jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
+
         $jadwal = ArrayHelper::map($jadwal,'jadwal_id',function($model){
             return $model->hari.' - '.$model->nama_mata_kuliah.' - '.$model->kelas->nama;
         });
 
-        $key_jadwal = ArrayHelper::map($jadwal,'jadwal_id','jadwal_id');
         if(!in_array($model->jadwal_id,$key_jadwal)) return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {

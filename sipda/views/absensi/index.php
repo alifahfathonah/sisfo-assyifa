@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Buat Absensi', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Cetak Absensi', ['cetak'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?php if(Yii::$app->session->hasFlash('success')):?>

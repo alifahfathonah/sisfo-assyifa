@@ -151,3 +151,19 @@ input[type=file].form-control {
 .has-error > .form-control {
     border-color:red;
 }
+
+.glyphicon {
+    font-family: "Font Awesome 5 Free";
+}
+.glyphicon-eye-open:before {
+    content: "\f06e";
+    color: var(--success);
+}
+.glyphicon-pencil:before {
+    content: "\f044";
+    color: var(--primary);
+}
+.glyphicon-trash:before {
+    content: "\f2ed";
+    color: var(--danger);
+}
