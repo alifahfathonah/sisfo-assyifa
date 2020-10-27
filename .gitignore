@@ -5,6 +5,7 @@
 
 backend/web/uploads/*
 frontend/web/uploads/*
+sipda/web/uploads/*
 
 # phpstorm project files
 .idea

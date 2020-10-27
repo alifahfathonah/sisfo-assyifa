@@ -4,12 +4,12 @@ namespace common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Seminar;
+use common\models\PengajuanSkripsi;
 
 /**
- * SeminarSearch represents the model behind the search form of `common\models\Seminar`.
+ * PengajuanSkripsiSearch represents the model behind the search form of `common\models\PengajuanSkripsi`.
  */
-class SeminarSearch extends Seminar
+class PengajuanSkripsiSearch extends PengajuanSkripsi
 {
     public $nim, $mahasiswa;
     /**
@@ -19,7 +19,7 @@ class SeminarSearch extends Seminar
     {
         return [
             [['nim','id', 'mahasiswa_id'], 'integer'],
-            [['mahasiswa','judul', 'nilai_harapan', 'nilai_didapat'], 'safe'],
+            [['mahasiswa','judul', 'konten', 'status', 'file_url'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class SeminarSearch extends Seminar
      */
     public function search($params)
     {
-        $query = Seminar::find();
+        $query = PengajuanSkripsi::find();
 
         // add conditions that should always apply here
         $query->joinWith(['mahasiswa']);
@@ -66,9 +66,10 @@ class SeminarSearch extends Seminar
         ]);
 
         $query->andFilterWhere(['like', 'judul', $this->judul])
-            ->andFilterWhere(['like', 'nilai_harapan', $this->nilai_harapan])
+            ->andFilterWhere(['like', 'konten', $this->konten])
+            ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'nama', $this->mahasiswa])
-            ->andFilterWhere(['like', 'nilai_didapat', $this->nilai_didapat]);
+            ->andFilterWhere(['like', 'file_url', $this->file_url]);
 
         return $dataProvider;
     }

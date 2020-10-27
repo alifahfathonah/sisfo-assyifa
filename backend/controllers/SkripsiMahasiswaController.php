@@ -144,9 +144,10 @@ class SkripsiMahasiswaController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        $skripsi_id = $model->skripsi_id;
         $model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index','SkripsiMahasiswaSearch[skripsi_id]'=>$skripsi_id]);
     }
 
     /**

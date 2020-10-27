@@ -3,18 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Dosen;
-use common\models\SeminarPenguji;
-use common\models\SeminarPengujiSearch;
+use common\models\PengajuanSkripsi;
+use common\models\PengajuanSkripsiSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 
 /**
- * SeminarPengujiController implements the CRUD actions for SeminarPenguji model.
+ * PengajuanSkripsiController implements the CRUD actions for PengajuanSkripsi model.
  */
-class SeminarPengujiController extends Controller
+class PengajuanSkripsiController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -32,12 +30,12 @@ class SeminarPengujiController extends Controller
     }
 
     /**
-     * Lists all SeminarPenguji models.
+     * Lists all PengajuanSkripsi models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SeminarPengujiSearch();
+        $searchModel = new PengajuanSkripsiSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -47,7 +45,7 @@ class SeminarPengujiController extends Controller
     }
 
     /**
-     * Displays a single SeminarPenguji model.
+     * Displays a single PengajuanSkripsi model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -60,30 +58,25 @@ class SeminarPengujiController extends Controller
     }
 
     /**
-     * Creates a new SeminarPenguji model.
+     * Creates a new PengajuanSkripsi model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($seminar_id)
+    public function actionCreate()
     {
-        $model = new SeminarPenguji();
-        $model->seminar_id = $seminar_id;
+        $model = new PengajuanSkripsi();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['seminar/view', 'id' => $model->seminar_id]);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        $dosen = Dosen::find()->all();
-        $dosen = ArrayHelper::map($dosen,'id','nama');
 
         return $this->render('create', [
             'model' => $model,
-            'dosen' => $dosen,
         ]);
     }
 
     /**
-     * Updates an existing SeminarPenguji model.
+     * Updates an existing PengajuanSkripsi model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -102,8 +95,17 @@ class SeminarPengujiController extends Controller
         ]);
     }
 
+    public function actionUpdateStatus($id, $status)
+    {
+        $model = $this->findModel($id);
+        $model->status = $status;
+        $model->save();
+        Yii::$app->session->setFlash('success', "Judul skripsi berhasil di ".strtolower($status)."!");
+        return $this->redirect(['view', 'id' => $model->id]);
+    }
+
     /**
-     * Deletes an existing SeminarPenguji model.
+     * Deletes an existing PengajuanSkripsi model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -111,23 +113,21 @@ class SeminarPengujiController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        $seminar_id = $model->seminar_id;
-        $model->delete();
+        $this->findModel($id)->delete();
 
-        return $this->redirect(['seminar/view', 'id' => $seminar_id]);
+        return $this->redirect(['index']);
     }
 
     /**
-     * Finds the SeminarPenguji model based on its primary key value.
+     * Finds the PengajuanSkripsi model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return SeminarPenguji the loaded model
+     * @return PengajuanSkripsi the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = SeminarPenguji::findOne($id)) !== null) {
+        if (($model = PengajuanSkripsi::findOne($id)) !== null) {
             return $model;
         }
 

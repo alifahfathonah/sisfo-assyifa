@@ -15,10 +15,13 @@ class m201026_092822_create_pengajuan_skripsi_table extends Migration
         $this->createTable('{{%pengajuan_skripsi}}', [
             'id' => $this->primaryKey(),
             'mahasiswa_id' => $this->integer(),
+            'processed_by' => $this->integer(),
             'judul' => $this->string(),
             'konten' => $this->text(),
             'status' => $this->string(),
             'file_url' => $this->string(),
+            'created_at' => $this->timestamp(),
+            'updated_at' => $this->timestamp(),
         ]);
 
         $this->createIndex(
@@ -32,6 +35,21 @@ class m201026_092822_create_pengajuan_skripsi_table extends Migration
             'pengajuan_skripsi',
             'mahasiswa_id',
             'mahasiswa',
+            'id',
+            'CASCADE'
+        );
+
+        $this->createIndex(
+            'idx-pengajuan_skripsi-processed_by',
+            'pengajuan_skripsi',
+            'processed_by'
+        );
+
+        $this->addForeignKey(
+            'fk-pengajuan_skripsi-processed_by',
+            'pengajuan_skripsi',
+            'processed_by',
+            'user',
             'id',
             'CASCADE'
         );

@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Seminar;
+use common\models\SeminarPengujiSearch;
 use common\models\SeminarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -52,8 +53,13 @@ class SeminarController extends Controller
      */
     public function actionView($id)
     {
+        $searchModel = new SeminarPengujiSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

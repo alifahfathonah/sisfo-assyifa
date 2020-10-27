@@ -117,4 +117,24 @@ class Mahasiswa extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DosenPembimbing::className(), ['mahasiswa_id'=>'id']);
     }
+
+    public function getSkripsi()
+    {
+        return $this->hasOne(SkripsiMahasiswa::className(),['mahasiswa_id'=>'id']);
+    }
+
+    public function getPengajuanSkripsi()
+    {
+        return $this->hasMany(PengajuanSkripsi::className(),['mahasiswa_id'=>'id']);
+    }
+
+    public function getAccPengajuan()
+    {
+        return $this->hasOne(PengajuanSkripsi::className(),['mahasiswa_id'=>'id'])->where(['status'=>'ACC'])->one();
+    }
+
+    public function getSeminars()
+    {
+        return $this->hasMany(Seminar::className(),['mahasiswa_id'=>'id']);
+    }
 }

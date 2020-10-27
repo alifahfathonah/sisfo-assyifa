@@ -12,13 +12,21 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'mahasiswa_id')->textInput() ?>
+    <?= $form->field($model, 'mahasiswa_id')->textInput(['readonly'=>true]) ?>
 
-    <?= $form->field($model, 'judul')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'judul')->textInput(['maxlength' => true,'readonly'=>true]) ?>
 
-    <?= $form->field($model, 'nilai_harapan')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'nilai_harapan')->textInput(['maxlength' => true,'readonly'=>true]) ?>
 
-    <?= $form->field($model, 'nilai_didapat')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'nilai_didapat')->dropDownList([
+        'A' => 'A',
+        'B' => 'B',
+        'C' => 'C',
+        'D' => 'D',
+        'E' => 'E',
+    ],['prompt'=>'- Pilih -']) ?>
+
+<?= $form->field($model, 'tanggal')->input('date') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

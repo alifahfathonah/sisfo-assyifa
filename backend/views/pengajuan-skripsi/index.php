@@ -4,21 +4,22 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\SeminarSearch */
+/* @var $searchModel common\models\PengajuanSkripsiSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Seminar';
+$this->title = 'Pengajuan Skripsi';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="seminar-index">
+<div class="pengajuan-skripsi-index">
 <div class="card shadow mb-4">
 <div class="card-body">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?php /*
     <p>
-        <?= Html::a('Create Seminar', ['create'], ['class' => 'btn btn-success']) ?>
-    </p> */ ?>
+        <?= Html::a('Create Pengajuan Skripsi', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+    */ ?>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -27,7 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             [
                 'attribute' => 'nim',
                 'value' => 'mahasiswa.NIM'
@@ -37,22 +37,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'mahasiswa.nama'
             ],
             'judul',
-            'nilai_harapan',
-            'nilai_didapat',
+            'status',
+            'file_url:url',
 
             [
                 'class' => 'yii\grid\ActionColumn',
                 'buttons' => [
-                    'delete' => function()
-                    {
+                    'update' => function(){
                         return '';
-                    }
+                    },
+                    'delete' => function(){
+                        return '';
+                    },
                 ]
             ],
         ],
     ]); ?>
 
 
-</div>
-</div>
 </div>

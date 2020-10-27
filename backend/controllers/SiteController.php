@@ -61,6 +61,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        // Yii::$app->cache->flush();
         return $this->render('index');
     }
 

@@ -41,6 +41,7 @@ class JadwalController extends Controller
      */
     public function actionIndex()
     {
+        // Yii::$app->cache->flush();
         $searchModel = new VwJadwalSearch();
         $queryParams = Yii::$app->request->queryParams;
         $queryParams['VwJadwalSearch']['tahun_akademik_id'] = !empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0;
