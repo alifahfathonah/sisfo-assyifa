@@ -53,7 +53,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'judul',
             'konten:raw',
             'status',
-            'file_url:url',
+            [
+                'attribute'=>'file_url',
+                'format' => 'raw',
+                'value'=>function($model){
+                    return Html::a('Download',Yii::$app->params['frontend_url'].'/uploads/'.$model->file_url,['target'=>'_blank']);
+                }
+            ],
         ],
     ]) ?>
 
