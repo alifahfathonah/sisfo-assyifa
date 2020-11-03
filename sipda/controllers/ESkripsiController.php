@@ -13,13 +13,30 @@ class ESkripsiController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        $mahasiswa = Yii::$app->user->identity->mahasiswa;
-        if(!$mahasiswa->skripsi)
-            return $this->render('restricted');
+        //  for mahasiswa
+        if(Yii::$app->user->can('Mahasiswa'))
+        {
+            $mahasiswa = Yii::$app->user->identity->mahasiswa;
+            if(!$mahasiswa->skripsi)
+                return $this->render('restricted');
 
-        return $this->render('index',[
-            'mahasiswa' => $mahasiswa,
-        ]);
+            return $this->render('index',[
+                'mahasiswa' => $mahasiswa,
+            ]);
+        }
+        
+        if(Yii::$app->user->can('Dosen'))
+        {
+            $dosen = Yii::$app->user->identity->dosen;
+            if(!$dosen->pembimbings)
+                return $this->render('restricted');
+
+            return $this->render('dosen',[
+                'dosen' => $dosen,
+            ]);
+        }
+        
+        
     }
 
     public function actionDosenPembimbing()

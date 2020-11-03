@@ -78,4 +78,10 @@ class Dosen extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DosenPengampuh::className(), ['dosen_id' => 'id']);
     }
+
+    public function getPembimbings()
+    {
+        return $this->hasMany(DosenPembimbing::className(), ['dosen_id' => 'id']);
+    }
+
 }
