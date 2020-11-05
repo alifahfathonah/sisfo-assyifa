@@ -53,6 +53,7 @@ $config['as access'] =  [
     'allowActions' => [
         // '*',
         'site/login',
+        'site/login-by-token',
         // 'site/request-password-reset',
         // 'admin/*',
         // 'gii/*',
