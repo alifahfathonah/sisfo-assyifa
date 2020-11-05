@@ -70,6 +70,7 @@ class JadwalController extends Controller
             $dosen_pengampuh = ArrayHelper::map($dosen_pengampuh,'dosen_id','dosen_id');
             // $dosen_pengampuh = array_keys($dosen_pengampuh);
             $queryParams['VwJadwalSearch']['dosen_id'] = $dosen_pengampuh;
+            $queryParams['VwJadwalSearch']['kelas_id'] = $mahasiswa->kelas->id;
             $queryParams['PraktekMahasiswaSearch']['tahun_akademik'] = $tahun_akademik;
             $queryParams['PraktekMahasiswaSearch']['mahasiswa_id'] = $mahasiswa->id;
         }
