@@ -6,7 +6,8 @@ $params = array_merge(
     require __DIR__ . '/params-local.php'
 );
 
-return [
+
+$config = [
     'id' => 'app-sipda',
     'name'=>'SIPDA',
     'basePath' => dirname(__DIR__),
@@ -46,3 +47,18 @@ return [
     ],
     'params' => $params,
 ];
+
+$config['as access'] =  [
+    'class' => 'mdm\admin\components\AccessControl',
+    'allowActions' => [
+        // '*',
+        'site/login',
+        // 'site/request-password-reset',
+        // 'admin/*',
+        // 'gii/*',
+        // 'debug/*',
+        // 'ajax/*'
+    ]
+];
+
+return $config;

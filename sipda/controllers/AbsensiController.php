@@ -84,13 +84,21 @@ class AbsensiController extends Controller
                     'Sakit'  => 1,
                     'Tanpa Keterangan'  => 0,
                 ];
+                $label = [
+                    'Hadir' => 'H',
+                    'Izin'  => 'I',
+                    'Sakit'  => 'S',
+                    'Tanpa Keterangan'  => 'A',
+                ];
                 $jadwal = $model[0]->jadwal;
                 $mahasiswa = $jadwal->dosenPengampuh->kelas->mahasiswas;
-                return $this->renderPartial('cetak',[
+                $this->layout = "cetak-absensi";
+                return $this->render('cetak',[
                     'jadwal' => $jadwal,
                     'mahasiswa' => $mahasiswa,
                     'model' => $model,
                     'range' => $range,
+                    'label' => $label,
                 ]);
             }
         }

@@ -54,6 +54,7 @@ $config['as access'] =  [
     'allowActions' => [
         // '*',
         'site/login',
+        'site/request-password-reset',
         // 'admin/*',
         // 'gii/*',
         // 'debug/*',

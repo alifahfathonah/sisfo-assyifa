@@ -35,6 +35,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tipe')->dropDownList([
         'Materi'=>'Materi',
+        'Teori dan Praktik'=>'Teori dan Praktik',
         'Kuis'=>'Kuis',
     ],['prompt'=>'- Pilih Tipe -']) ?>
 

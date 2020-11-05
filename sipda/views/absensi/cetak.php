@@ -9,7 +9,6 @@ use yii\widgets\ActiveForm;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 ?>
-<link href="/assets/8f7fef9b/css/bootstrap.css" rel="stylesheet">
 <style>
 table {
     font-size:12px;
@@ -91,7 +90,7 @@ table th {
                 $absensi_mahasiswa = $absensi->getAbsensiMahasiswas()->where(['mahasiswa_id'=>$mhs->id])->one(); 
                 $presentase += $range[$absensi_mahasiswa->status];
             ?>
-            <th><?=$range[$absensi_mahasiswa->status]?></th>
+            <th><?=$label[$absensi_mahasiswa->status]?></th>
             <?php endforeach ?>
             <td><?= number_format($presentase/$max_pertemuan*100) ?></td>
         </tr>

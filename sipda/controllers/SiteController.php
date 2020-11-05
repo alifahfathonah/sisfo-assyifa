@@ -97,6 +97,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        return $this->redirect(Yii::$app->params['frontend_url']);
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }

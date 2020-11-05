@@ -70,7 +70,8 @@ div[data-oembed-url] div {
         <div class="panel with-nav-tabs panel-success">
             <div class="panel-heading">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab1success" data-toggle="tab">Soal</a></li>
+                        <li class="active"><a href="#tab1success" data-toggle="tab">Buat Soal</a></li>
+                        <li><a href="#tab4success" data-toggle="tab">Import Soal</a></li>
                         <li><a href="#tab2success" data-toggle="tab">Peserta Kuis</a></li>
                         <li><a href="#tab3success" data-toggle="tab">Waktu Kuis</a></li>
                     </ul>
@@ -78,16 +79,8 @@ div[data-oembed-url] div {
             <div class="panel-body">
                 <div class="tab-content">
                     <div class="tab-pane fade in active" id="tab1success">
-                        <div class="hidden">
-                        <form action="<?=Url::to(['materi/imports','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" enctype="multipart/form-data" id="formImport" method="post">
-                        <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
-                        <input type="hidden" name="ImportFile[tipe]" value="tipe" />
-                        <input type="file" name="ImportFile[file]" id="fileSoal" onchange="if(confirm('Apakah anda yakin akan mengimports soal ?')){formImport.submit()}">
-                        </form>
-                        </div>
                         <h4>Soal Kuis</h4>
                         <a href="<?=Url::to(['materi/buat-soal','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" class="btn btn-success">Buat Soal</a>
-                        <button class="btn btn-primary" onclick="fileSoal.click()">Import Soal</button>
                         <p></p>
                         <table class="table table-bordered">
                             <tr>
@@ -98,7 +91,7 @@ div[data-oembed-url] div {
                             </tr>
                             <?php if(empty($materi->childs)): ?>
                             <tr>
-                                <td colspan="3">
+                                <td colspan="4">
                                     <i>Tidak ada soal</i>
                                 </td>
                             </tr>
@@ -129,6 +122,17 @@ div[data-oembed-url] div {
                             </tr>
                             <?php endforeach ?>
                         </table>
+                    </div>
+                    <div class="tab-pane fade" id="tab4success">
+                        <form action="<?=Url::to(['materi/imports','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" enctype="multipart/form-data" id="formImport" method="post" onsubmit="if(confirm('Apakah anda yakin akan mengimports soal ?')){return true}else{return false}">
+                        <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+                        <input type="hidden" name="ImportFile[tipe]" value="tipe" />
+                        <div class="form-group">
+                            <label for="">File Soal</label>
+                            <input type="file" class="form-control" name="ImportFile[file]" id="fileSoal">
+                        </div>
+                        <button class="btn btn-primary">Import Soal</button>
+                        </form>
                     </div>
                     <div class="tab-pane fade" id="tab2success">
                         <table class="table table-bordered table-striped">

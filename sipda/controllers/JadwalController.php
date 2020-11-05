@@ -3,17 +3,23 @@
 namespace sipda\controllers;
 
 use Yii;
-use common\models\Jadwal;
-use common\models\JadwalSearch;
 use common\models\Kuis;
-use common\models\KuisJawaban;
-use common\models\Materi;
-use common\models\VwJadwalSearch;
-use common\models\WaktuKuis;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use common\models\Berkas;
+use common\models\Jadwal;
+use common\models\Materi;
+use common\models\Praktek;
 use yii\filters\VerbFilter;
+use common\models\WaktuKuis;
 use yii\helpers\ArrayHelper;
+use common\models\KuisJawaban;
+use common\models\Penyimpanan;
+use common\models\PraktekFile;
+use common\models\JadwalSearch;
+use common\models\VwJadwalSearch;
+use yii\web\NotFoundHttpException;
+use common\models\PraktekDosenSearch;
+use common\models\PraktekMahasiswaSearch;
 
 /**
  * JadwalController implements the CRUD actions for Jadwal model.
@@ -43,15 +49,22 @@ class JadwalController extends Controller
     {
         // Yii::$app->cache->flush();
         $searchModel = new VwJadwalSearch();
+        $praktek = [];
+
+        $tahun_akademik = !empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0;;
         $queryParams = Yii::$app->request->queryParams;
-        $queryParams['VwJadwalSearch']['tahun_akademik_id'] = !empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0;
+        $queryParams['VwJadwalSearch']['tahun_akademik_id'] = $tahun_akademik;
         if(Yii::$app->user->can('Dosen'))
         {
+            $praktek = new PraktekDosenSearch;
             $queryParams['VwJadwalSearch']['dosen_id'] = Yii::$app->user->identity->dosen->id;
+            $queryParams['PraktekDosenSearch']['tahun_akademik'] = $tahun_akademik;
+            $queryParams['PraktekDosenSearch']['dosen_id'] = Yii::$app->user->identity->dosen->id;
         }
 
         if(Yii::$app->user->can('Mahasiswa'))
         {
+            $praktek = new PraktekMahasiswaSearch;
             $mahasiswa = Yii::$app->user->identity->mahasiswa;
             $dosen_pengampuh = ArrayHelper::map($mahasiswa->kelas->jadwals,function($model){
                 return $model->dosenPengampuh->dosen_id;
@@ -60,12 +73,17 @@ class JadwalController extends Controller
             });
             $dosen_pengampuh = array_keys($dosen_pengampuh);
             $queryParams['VwJadwalSearch']['dosen_id'] = $dosen_pengampuh;
+            $queryParams['PraktekMahasiswaSearch']['tahun_akademik'] = $tahun_akademik;
+            $queryParams['PraktekMahasiswaSearch']['mahasiswa_id'] = $mahasiswa->id;
         }
         $dataProvider = $searchModel->search($queryParams);
+        $praktekProvider = $praktek->search($queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'praktek' => $praktek,
+            'praktekProvider'=>$praktekProvider
         ]);
     }
 
@@ -79,6 +97,58 @@ class JadwalController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+        ]);
+    }
+
+    public function actionPraktek($id)
+    {
+        $model = Praktek::findOne($id);
+        return $this->render('praktek',[
+            'model' => $model
+        ]);
+    }
+
+    public function actionUploadBerkas()
+    {
+        $model = new PraktekFile;
+        if ($model->load(Yii::$app->request->post())) {
+            $file = \yii\web\UploadedFile::getInstance($model,'file_url');
+            $filename = strtotime(date('Y-m-d H:i:s')).'.'. $file->extension;
+            $file->saveAs(\Yii::getAlias("@frontend/web/uploads/{$filename}")); //'uploads/' . $filename);
+            $penyimpanan = new Penyimpanan;
+            $penyimpanan->user_id = Yii::$app->user->identity->id;
+            $penyimpanan->nama = $file->baseName;
+            $penyimpanan->berkas = $filename;
+            $penyimpanan->save();
+            $model->mahasiswa_id = Yii::$app->user->identity->mahasiswa->id;
+            $model->file_url = $filename;
+            $model->save();
+            Yii::$app->session->setFlash('success', "Berkas berhasil di upload!");
+            return $this->redirect(['praktek','id'=>$model->praktek_id]);
+        }
+    }
+
+    public function actionKoreksi($id)
+    {
+        $model = PraktekFile::findOne($id);
+        if ($model->load(Yii::$app->request->post())) {
+            $file = \yii\web\UploadedFile::getInstance($model,'file_koreksi_url');
+            $filename = strtotime(date('Y-m-d H:i:s')).'.'. $file->extension;
+            $file->saveAs(\Yii::getAlias("@frontend/web/uploads/{$filename}")); //'uploads/' . $filename);
+            $penyimpanan = new Penyimpanan;
+            $penyimpanan->user_id = Yii::$app->user->identity->id;
+            $penyimpanan->nama = $file->baseName;
+            $penyimpanan->berkas = $filename;
+            $penyimpanan->save();
+            $model->dosen_id = Yii::$app->user->identity->dosen->id;
+            $model->file_koreksi_url = $filename;
+            $model->save();
+            Yii::$app->session->setFlash('success', "Berkas berhasil di koreksi!");
+            return $this->redirect(['praktek','id'=>$model->praktek_id]);
+        }
+
+        return $this->render('koreksi',[
+            'model' => $model
         ]);
     }
 
