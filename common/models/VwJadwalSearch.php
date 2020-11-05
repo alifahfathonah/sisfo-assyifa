@@ -11,14 +11,15 @@ use common\models\VwJadwal;
  */
 class VwJadwalSearch extends VwJadwal
 {
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['dosen_id','kelas_id', 'mata_kuliah_prodi_id','mata_kuliah_id','tahun_akademik_id'], 'integer'],
-            [['nama_dosen','nama_mata_kuliah','hari', 'waktu_mulai', 'waktu_selesai'], 'safe'],
+            [['kelas_id', 'mata_kuliah_prodi_id','mata_kuliah_id','tahun_akademik_id'], 'integer'],
+            [['dosen_id','nama_dosen','nama_mata_kuliah','hari', 'waktu_mulai', 'waktu_selesai'], 'safe'],
         ];
     }
 

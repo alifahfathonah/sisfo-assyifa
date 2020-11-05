@@ -66,12 +66,9 @@ class JadwalController extends Controller
         {
             $praktek = new PraktekMahasiswaSearch;
             $mahasiswa = Yii::$app->user->identity->mahasiswa;
-            $dosen_pengampuh = ArrayHelper::map($mahasiswa->kelas->jadwals,function($model){
-                return $model->dosenPengampuh->dosen_id;
-            },function($model){
-                return $model->dosenPengampuh->dosen_id;
-            });
-            $dosen_pengampuh = array_keys($dosen_pengampuh);
+            $dosen_pengampuh = $mahasiswa->kelas->dosenPengampuhs;
+            $dosen_pengampuh = ArrayHelper::map($dosen_pengampuh,'dosen_id','dosen_id');
+            // $dosen_pengampuh = array_keys($dosen_pengampuh);
             $queryParams['VwJadwalSearch']['dosen_id'] = $dosen_pengampuh;
             $queryParams['PraktekMahasiswaSearch']['tahun_akademik'] = $tahun_akademik;
             $queryParams['PraktekMahasiswaSearch']['mahasiswa_id'] = $mahasiswa->id;
