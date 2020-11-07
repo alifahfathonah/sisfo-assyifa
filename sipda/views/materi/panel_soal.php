@@ -14,7 +14,8 @@ $this->params['breadcrumbs'][] = ['label' => $model->dosenPengampuh->mataKuliah-
 $this->params['breadcrumbs'][] = ['label' => $parent->judul, 'url' => ['jadwal/materi','id'=>$jadwal_id,'index'=>$parent->no_urut-1]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<script src="https://cdn.ckeditor.com/4.15.0/basic/ckeditor.js"></script>
+<!-- <script src="https://cdn.ckeditor.com/4.15.0/basic/ckeditor.js"></script> -->
+<script src="https://cdn.ckeditor.com/4.14.0/standard-all/ckeditor.js"></script>
 <script>
     var jumlah = '<?= count($parent->childs); ?>';
 </script>
@@ -109,7 +110,23 @@ $this->params['breadcrumbs'][] = $this->title;
                 initJawaban(index)
         })
         
-        CKEDITOR.replaceAll('editor', {height: 100});
+        CKEDITOR.replaceAll('editor', {
+            extraPlugins: 'embed,autoembed,image2',
+            height: 100,
+
+            // Load the default contents.css file plus customizations for this sample.
+            contentsCss: [
+                'http://cdn.ckeditor.com/4.14.0/full-all/contents.css',
+                'https://ckeditor.com/docs/vendors/4.14.0/ckeditor/assets/css/widgetstyles.css'
+            ],
+            // Setup content provider. See https://ckeditor.com/docs/ckeditor4/latest/features/media_embed
+            embed_provider: '//ckeditor.iframe.ly/api/oembed?url={url}&callback={callback}',
+
+            // Configure the Enhanced Image plugin to use classes instead of styles and to disable the
+            // resizer (because image size is controlled by widget styles or the image takes maximum
+            // 100% of the editor width).
+            image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
+        });
 
         for (var i in CKEDITOR.instances) {
             CKEDITOR.instances[i].on('change', setOnChange);
