@@ -70,8 +70,10 @@ div[data-oembed-url] div {
         <div class="panel with-nav-tabs panel-success">
             <div class="panel-heading">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab1success" data-toggle="tab">Buat Soal</a></li>
+                        <li class="active"><a href="#tab1success" data-toggle="tab">Soal</a></li>
+                        <?php /* 
                         <li><a href="#tab4success" data-toggle="tab">Import Soal</a></li>
+                        */ ?>
                         <li><a href="#tab2success" data-toggle="tab">Peserta Kuis</a></li>
                         <li><a href="#tab3success" data-toggle="tab">Waktu Kuis</a></li>
                     </ul>
@@ -80,14 +82,14 @@ div[data-oembed-url] div {
                 <div class="tab-content">
                     <div class="tab-pane fade in active" id="tab1success">
                         <h4>Soal Kuis</h4>
-                        <a href="<?=Url::to(['materi/buat-soal','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" class="btn btn-success">Buat Soal</a>
+                        <a href="<?=Url::to(['materi/panel-soal','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" class="btn btn-success">Panel Soal</a>
                         <p></p>
                         <table class="table table-bordered">
                             <tr>
                                 <td>#</td>
                                 <td>Judul</td>
                                 <td>Tipe Soal</td>
-                                <td></td>
+                                <!-- <td></td> -->
                             </tr>
                             <?php if(empty($materi->childs)): ?>
                             <tr>
@@ -107,6 +109,7 @@ div[data-oembed-url] div {
                                     Jawaban : <?=$child->getChilds()->count()?>
                                     <?php endif ?>
                                 </td>
+                                <?php /*
                                 <td>
                                     <a href="<?=Url::to(['materi/lihat-soal','id'=>$child->id,'jadwal_id'=>$model->id])?>">Lihat</a>
                                     |
@@ -119,10 +122,12 @@ div[data-oembed-url] div {
                                             ],
                                         ]) ?>
                                 </td>
+                                */ ?>
                             </tr>
                             <?php endforeach ?>
                         </table>
                     </div>
+                    <?php /*
                     <div class="tab-pane fade" id="tab4success">
                         <form action="<?=Url::to(['materi/imports','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" enctype="multipart/form-data" id="formImport" method="post" onsubmit="if(confirm('Apakah anda yakin akan mengimports soal ?')){return true}else{return false}">
                         <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
@@ -134,6 +139,7 @@ div[data-oembed-url] div {
                         <button class="btn btn-primary">Import Soal</button>
                         </form>
                     </div>
+                    */ ?>
                     <div class="tab-pane fade" id="tab2success">
                         <table class="table table-bordered table-striped">
                             <thead>

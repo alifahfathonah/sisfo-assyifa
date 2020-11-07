@@ -33,6 +33,18 @@ class MateriController extends Controller
         ];
     }
 
+    // /**
+    //  * @inheritdoc
+    //  */
+    public function beforeAction($action)
+    {            
+        if ($action->id == 'save-soal') {
+            $this->enableCsrfValidation = false;
+        }
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Lists all Materi models.
      * @return mixed
@@ -172,7 +184,7 @@ class MateriController extends Controller
                         $jawaban->tipe = $i == $start_index+$jawaban_benar ? "Jawaban Benar" : "Jawaban Salah";
                         $jawaban->tipe_konten = "Text";
                         $jawaban->judul = "Jawaban";
-                        $jawaban->konten = "<p>".$worksheet->getCellByColumnAndRow($i, $row)->getValue()."</p>";
+                        $jawaban->konten = $worksheet->getCellByColumnAndRow($i, $row)->getValue();
                         $jawaban->save();
 
                         // save jawaban to post
@@ -193,6 +205,143 @@ class MateriController extends Controller
             }
             return $this->redirect(['jadwal/materi','id'=>$jadwal_id]);
         }
+    }
+
+    function actionPanelSoal($dosen_pengampuh_id, $jadwal_id, $parent_id)
+    {
+        $model = new Materi();
+        $parent = Materi::find()->where(['id'=>$parent_id])->with(['childs'])->one();
+        $model->dosen_pengampuh_id = $dosen_pengampuh_id;
+        $model->tipe = 'Soal';
+
+        $all_soal = $parent->getChilds()->asArray()->all();
+        
+        return $this->render('panel_soal',[
+            'model' => $model,
+            'parent' => $parent,
+            'jadwal_id' => $jadwal_id,
+            'all_soal' => $all_soal,
+        ]);
+    }
+
+    function actionSaveSoal($dosen_pengampuh_id,$jadwal_id,$parent_id)
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            $request = Yii::$app->request->post();
+            $soals = $request['data'];
+            $deletePosts = isset($request['deletePosts']) ? $request['deletePosts'] : [];
+
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+
+                foreach($deletePosts as $id)
+                {
+                    $materi = Materi::findOne($id);
+                    if(!empty($materi)) $materi->delete();
+                }
+
+                foreach($soals as $key => $soal)
+                {
+                    if(!empty($soal['id'])){
+                        // update
+                        $materi = Materi::findOne($soal['id']);
+                        $materi->dosen_pengampuh_id = $dosen_pengampuh_id;
+                        $materi->status = "Publish";
+                        $materi->no_urut = $soal['no_urut'];
+                        $materi->tipe = "Soal";
+                        $materi->tipe_konten = "Text";
+                        $materi->judul = "Soal ".$soal['no_urut'];
+                        $materi->konten = $soal['konten'];
+                        $materi->save();
+
+                        if(isset($soal['childs']))
+                        foreach($soal['childs'] as $child)
+                        {
+                            if(!empty($child['id']))
+                            {
+                                // update
+                                $jawaban = Materi::findOne($child['id']);
+                                $jawaban->status = "Publish";
+                                $jawaban->tipe = $child['tipe'];
+                                $jawaban->tipe_konten = "Text";
+                                $jawaban->judul = "Jawaban";
+                                $jawaban->konten = $child['konten'];
+                                $jawaban->save();
+                            }
+                            else
+                            {
+                                // jawaban baru
+                                $jawaban = new Materi;
+                                $jawaban->status = "Publish";
+                                $jawaban->tipe = $child['tipe'];
+                                $jawaban->tipe_konten = "Text";
+                                $jawaban->judul = "Jawaban";
+                                $jawaban->konten = $child['konten'];
+                                $jawaban->save();
+
+                                // save jawaban to post
+                                $soaltem = new MateriItem;
+                                $soaltem->parent_id = $soal['id'];
+                                $soaltem->child_id = $jawaban->id;
+                                $soaltem->save();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $materi = new Materi();
+                        $materi->dosen_pengampuh_id = $dosen_pengampuh_id;
+                        $materi->status = "Publish";
+                        $materi->no_urut = $soal['no_urut'];
+                        $materi->tipe = "Soal";
+                        $materi->tipe_konten = "Text";
+                        $materi->judul = "Soal ".$soal['no_urut'];
+                        $materi->konten = $soal['konten'];
+                        $materi->save();
+
+                        // set parent 
+                        $materiItem = new MateriItem;
+                        $materiItem->parent_id = $parent_id;
+                        $materiItem->child_id = $materi->id;
+                        $materiItem->save();
+
+                        // buat jawaban
+                        if(isset($soal['childs']))
+                        foreach($soal['childs'] as $child)
+                        {
+                            // jawaban
+                            $jawaban = new Materi;
+                            $jawaban->status = "Publish";
+                            $jawaban->tipe = $child['tipe'];
+                            $jawaban->tipe_konten = "Text";
+                            $jawaban->judul = "Jawaban";
+                            $jawaban->konten = $child['konten'];
+                            $jawaban->save();
+
+                            // save jawaban to post
+                            $soaltem = new MateriItem;
+                            $soaltem->parent_id = $materi->id;
+                            $soaltem->child_id = $jawaban->id;
+                            $soaltem->save();
+                        }
+                    }
+                }
+                $transaction->commit();
+                $result = [
+                    'success' => true,
+                    'message' => 'Soal Berhasil disimpan.',
+                ];
+            } catch (\Throwable $th) {
+                throw $th;
+                $transaction->rollback();
+                $result = [
+                    'success' => false,
+                    'message' => 'Soal Gagal disimpan.',
+                ];
+            }
+        }
+        return $result;
     }
 
     public function actionBuatSoal($dosen_pengampuh_id, $jadwal_id, $parent_id)
@@ -330,7 +479,7 @@ class MateriController extends Controller
         $this->findModel($id)->delete();
         $parent = $this->findModel($parent_id);
         Yii::$app->session->setFlash('success', "Soal Berhasil di Hapus!");
-        return $this->redirect(['jadwal/materi','id'=>$jadwal_id,'index'=>$parent->no_urut-1]);
+        return $this->redirect(['materi/panel-soal','jadwal_id'=>$jadwal_id,'parent_id'=>$parent->id,'dosen_pengampuh_id'=>$parent->dosen_pengampuh_id]);
     }
 
     public function actionHapusJawaban($id, $jadwal_id, $parent_id)

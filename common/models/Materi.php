@@ -86,7 +86,7 @@ class Materi extends \yii\db\ActiveRecord
     public function getChilds()
     {
         return $this->hasMany(Materi::className(), ['id' => 'child_id'])
-          ->viaTable('materi_item', ['parent_id' => 'id']);
+          ->viaTable('materi_item', ['parent_id' => 'id'])->with('childs');
     }
 
     public function getWaktu()
