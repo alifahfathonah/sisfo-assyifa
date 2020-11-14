@@ -12,6 +12,8 @@ use common\models\Praktek;
 use yii\filters\VerbFilter;
 use common\models\WaktuKuis;
 use yii\helpers\ArrayHelper;
+use common\models\ImportFile;
+use common\models\MateriItem;
 use common\models\KuisJawaban;
 use common\models\Penyimpanan;
 use common\models\PraktekFile;
@@ -156,9 +158,9 @@ class JadwalController extends Controller
         $model = $this->findModel($id);
         $materies = [];
         if(Yii::$app->user->can('Dosen'))
-            $materies = $model->getMateries()->where(['in','tipe',['Materi','Kuis']])->orderby(['no_urut'=>SORT_ASC])->all();
+            $materies = $model->getMateries()->where(['in','tipe',['Materi','Kuis','Teori dan Praktik']])->orderby(['no_urut'=>SORT_ASC])->all();
         else
-            $materies = $model->getMateries()->where(['in','tipe',['Materi','Kuis']])->andwhere(['status'=>'Publish'])->orderby(['no_urut'=>SORT_ASC])->all();
+            $materies = $model->getMateries()->where(['in','tipe',['Materi','Kuis','Teori dan Praktik']])->andwhere(['status'=>'Publish'])->orderby(['no_urut'=>SORT_ASC])->all();
         $materi = !empty($materies) && isset($materies[$index]) ? $materies[$index] : [];
         $has_next = $index != (count($materies)-1);
         $has_prev = $index != 0;
@@ -170,6 +172,47 @@ class JadwalController extends Controller
             'has_next' => $has_next,
             'has_prev' => $has_prev,
         ]);
+    }
+
+    public function actionUploadTugas($dosen_pengampuh_id,$jadwal_id,$parent_id)
+    {
+        $model = new ImportFile;
+        if ($model->load(Yii::$app->request->post())){
+            
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                $file = \yii\web\UploadedFile::getInstance($model,'file');
+                $filename = strtotime(date('Y-m-d H:i:s')).'.'. $file->extension;
+                $file->saveAs(\Yii::getAlias("@frontend/web/uploads/{$filename}")); //'uploads/' . $filename);
+                $penyimpanan = new Penyimpanan;
+                $penyimpanan->user_id = Yii::$app->user->identity->id;
+                $penyimpanan->nama = $file->baseName;
+                $penyimpanan->berkas = $filename;
+                $penyimpanan->save();
+                
+                // buat soal
+                $materi = new Materi();
+                $materi->status = "Publish";
+                $materi->tipe = "File Tugas";
+                $materi->tipe_konten = "Tugas";
+                $materi->judul = Yii::$app->user->identity->mahasiswa->NIM.' - '.Yii::$app->user->identity->mahasiswa->nama;
+                $materi->konten = "<a href='".Yii::$app->params['frontend_url']."/uploads/".$filename."'>".$filename."</a>";
+                $materi->save();
+
+                // set parent 
+                $materiItem = new MateriItem;
+                $materiItem->parent_id = $parent_id;
+                $materiItem->child_id = $materi->id;
+                $materiItem->save();
+
+                $transaction->commit();
+                Yii::$app->session->addFlash("success", "Upload file Tugas Berhasil");
+            } catch (\Throwable $th) {
+                throw $th;
+                $transaction->rollback();
+            }
+            return $this->redirect(['materi','id'=>$jadwal_id]);
+        }
     }
 
     public function actionMulaiKuis($id,$jadwal_id)

@@ -37,9 +37,9 @@ div[data-oembed-url] div {
             <li class="list-group-item">
                 <a href="<?=Url::to(['jadwal/materi','id'=>$model->id,'index'=>$key])?>">
                     <?php if($key == $index): ?>
-                    <b><?=$m->judul?></b>
+                    <b><?=$m->judul ? $m->judul : $m->id?></b>
                     <?php else: ?>
-                        <?=$m->judul?>
+                        <?=$m->judul ? $m->judul : $m->id?>
                     <?php endif ?>
                 </a>
             </li>
@@ -65,7 +65,54 @@ div[data-oembed-url] div {
         <h3><?=$materi->judul?></h3>
         <?=$materi->konten?>
 
-        <?php if($materi->tipe == 'Kuis' && Yii::$app->user->can('Dosen')): ?>
+        <?php if($materi->tipe == 'Teori dan Praktik' && Yii::$app->user->can('Dosen')): ?>
+        <p></p>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>No</th>
+                <th>Mahasiswa</th>
+                <th>File</th>
+            </tr>
+            <?php if(!$materi->childs): ?>
+            <tr>
+                <td colspan="3"><i>Tidak ada data!</i></td>
+            </tr>
+            <?php endif ?>
+            <?php foreach($materi->childs as $key => $child): ?>
+            <tr>
+                <td><?=++$key?></td>
+                <td><?=$child->judul?></td>
+                <td><?=$child->konten?></td>
+            </tr>
+            <?php endforeach ?>
+        </table>
+        <?php elseif($materi->tipe == 'Teori dan Praktik' && Yii::$app->user->can('Mahasiswa')): ?>
+        <form action="<?=Url::to(['upload-tugas','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$model->id,'parent_id'=>$materi->id])?>" enctype="multipart/form-data" id="formUpload" method="post" class="hidden">
+        <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->csrfToken; ?>" />
+        <input type="hidden" name="ImportFile[tipe]" value="tipe" />
+        <input type="file" class="form-control" name="ImportFile[file]" id="fileTugas" onchange="if(confirm('Apakah anda yakin akan mengupload file ini ?')){formUpload.submit()}">
+        </form>
+        <button class="btn btn-primary" onclick="fileTugas.click()">Upload Tugas</button>
+        <p></p>
+        <?php $childs = $materi->getChilds()->where(['judul'=>Yii::$app->user->identity->mahasiswa->NIM.' - '.Yii::$app->user->identity->mahasiswa->nama])->all(); ?>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>No</td>
+                <td>File</td>
+            </tr>
+            <?php if(!$childs): ?>
+            <tr>
+                <td colspan="2"><i>Tidak ada data!</i></td>
+            </tr>
+            <?php endif ?>
+            <?php foreach($childs as $key => $child): ?>
+            <tr>
+                <td><?=++$key?></td>
+                <td><?=$child->konten?></td>
+            </tr>
+            <?php endforeach ?>
+        </table>
+        <?php elseif($materi->tipe == 'Kuis' && Yii::$app->user->can('Dosen')): ?>
         <br>
         <div class="panel with-nav-tabs panel-success">
             <div class="panel-heading">
