@@ -69,7 +69,7 @@ $this->title = 'Sistem Informasi STIKES As-Syifa';
                                 <?php if(in_array($app->nama,['Perpustakaan','OJS'])): ?>
                                 <p><a class="btn btn-default" href="<?=$app->url?>">Ke Aplikasi &raquo;</a></p>
                                 <?php else: ?>
-                                <p><a class="btn btn-default" href="<?=$app->url?>/site/login-by-token?token=<?=Yii::$app->user->identity->auth_key?>">Login Ke Aplikasi &raquo;</a></p>
+                                <p><a class="btn btn-default" href="<?=$app->url?>">Login Ke Aplikasi &raquo;</a></p>
                                 <?php endif ?>
                             </center>
                         </div>

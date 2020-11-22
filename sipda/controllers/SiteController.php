@@ -125,6 +125,11 @@ class SiteController extends Controller
         return $this->redirect(['index']);
     }
 
+    function doLogout()
+    {
+        Yii::$app->user->logout();
+    }
+
     /**
      * Logs out the current user.
      *
@@ -132,8 +137,8 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
+        $this->doLogout();
+        // (new \frontend\controllers\SiteController)->doLogout();
         return $this->redirect(Yii::$app->params['frontend_url'].'/site/logout-from-app');
     }
 

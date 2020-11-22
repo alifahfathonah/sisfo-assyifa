@@ -143,6 +143,13 @@ class SiteController extends Controller
         }
     }
 
+    function doLogout()
+    {
+        Yii::$app->user->logout();
+        // (new \sipda\controllers\SiteController)->doLogout();
+        // (new \siakad\controllers\SiteController)->doLogout();
+    }
+
     /**
      * Logs out the current user.
      *
