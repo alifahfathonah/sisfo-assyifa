@@ -105,6 +105,23 @@ AppAsset::register($this);
 </footer>
 
 <?php $this->endBody() ?>
+<script>
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    localStorage.setItem('activeTab', $(e.target).attr('href'));
+});
+
+var activeTab = localStorage.getItem('activeTab');
+if(activeTab)
+{
+    $(activeTab).addClass('in active');
+    $('li'+activeTab+'-li').addClass('active')
+}
+else
+{
+    $('#fungsional').addClass('in active');
+    $('li#fungsional-li').addClass('active')
+}
+</script>
 </body>
 </html>
 <?php $this->endPage() ?>

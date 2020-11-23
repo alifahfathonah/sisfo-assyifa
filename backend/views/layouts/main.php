@@ -76,6 +76,24 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@bower/startbootstra
 
 
 <?php $this->endBody() ?>
+<script>
+$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+    localStorage.setItem('activeTab', $(e.target).attr('href'));
+});
+
+var activeTab = localStorage.getItem('activeTab');
+if(activeTab)
+{
+    $(activeTab).addClass('show active');
+    $('a[href="'+activeTab+'"]').addClass('active')
+}
+else
+{
+
+    $('#v-pills-fungsional').addClass('show active');
+    $('a[href="#v-pills-fungsional"]').addClass('active')
+}
+</script>
 </body>
 </html>
 <?php $this->endPage() ?>

@@ -14,7 +14,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="card shadow mb-4">
 <div class="card-body">
     <p>
-        <?= Html::a('Create Dosen', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Buat Dosen', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Import dari Feeder', ['import'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Hapus data Feeder', ['delete-feeder'], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete all item?',
+                'method' => 'post',
+            ],
+        ]) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
