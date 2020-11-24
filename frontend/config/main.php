@@ -25,14 +25,14 @@ $config = [
             'identityCookie' => [
                 'name' => '_identity-frontend', 
                 'httpOnly' => true,
-                'domain'=>'.stikes-assyifa.local.id'
+                'domain'=>$params['cookies_domain']
             ],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
             // 'name' => 'advanced-frontend',
             'cookieParams' => [
-                'domain'=>'.stikes-assyifa.local.id',
+                'domain'=>$params['cookies_domain'],
                 'httpOnly' => true,
             ],
         ],
