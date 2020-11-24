@@ -28,15 +28,24 @@ $config = [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
+            'cookieValidationKey' => 'stikesassyifa'
         ],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'identityCookie' => [
+                'name' => '_identity-backend', 
+                'httpOnly' => true,
+                'domain'=>$params['cookies_domain']
+            ],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
-            'name' => 'advanced-backend',
+            // 'name' => 'advanced-backend',
+            'cookieParams' => [
+                'domain'=>$params['cookies_domain'],
+                'httpOnly' => true,
+            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

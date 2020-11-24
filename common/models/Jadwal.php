@@ -65,6 +65,11 @@ class Jadwal extends \yii\db\ActiveRecord
         return $this->hasMany(Absensi::className(), ['jadwal_id' => 'id']);
     }
 
+    public function getPenilaians()
+    {
+        return $this->hasMany(Penilaian::className(), ['jadwal_id' => 'id']);
+    }
+
     /**
      * Gets query for [[DosenPengampuh]].
      *
