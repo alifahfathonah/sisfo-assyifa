@@ -1,20 +1,23 @@
 <?php
 namespace siakad\controllers;
 
-use common\models\Application;
-use siakad\models\ResendVerificationEmailForm;
-use siakad\models\VerifyEmailForm;
 use Yii;
-use yii\base\InvalidArgumentException;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use common\models\LoginForm;
-use siakad\models\PasswordResetRequestForm;
-use siakad\models\ResetPasswordForm;
+use common\models\KartuUjian;
 use siakad\models\SignupForm;
+use common\models\Application;
 use siakad\models\ContactForm;
+use yii\filters\AccessControl;
+use common\models\ListMahasiswa;
+use siakad\models\VerifyEmailForm;
+use siakad\models\ResetPasswordForm;
+use yii\web\BadRequestHttpException;
+use common\models\MahasiswaKrsSearch;
+use yii\base\InvalidArgumentException;
+use siakad\models\PasswordResetRequestForm;
+use siakad\models\ResendVerificationEmailForm;
 
 /**
  * Site controller
@@ -89,6 +92,60 @@ class SiteController extends Controller
             'applications' => $applications
         ]);
     }
+
+    public function actionKartuUjian($periode = false)
+    {
+        $mahasiswa = Yii::$app->user->identity->mahasiswa;
+        $list_mahasiswa = ListMahasiswa::findOne(['nim'=>$mahasiswa->NIM]);
+        $searchModel = [];
+        $dataProvider = [];
+
+        if(!$periode)
+        {
+            return $this->render('kartu-ujian', [
+                'searchModel' => [],
+                'dataProvider' => [],
+            ]);
+        }
+
+        $kartu_ujian = KartuUjian::findOne(['id_semester'=>$periode,'id_mahasiswa'=>$list_mahasiswa->id_mahasiswa]);
+        if($kartu_ujian)
+        {
+            $searchModel = new MahasiswaKrsSearch();
+            $searchModel->nim = $mahasiswa->NIM;
+            $searchModel->id_periode = $periode;
+            $queryParams = Yii::$app->request->queryParams;
+            $dataProvider = $searchModel->search($queryParams);
+        }
+        return $this->render('kartu-ujian', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionPrint($periode = false)
+    {
+        $mahasiswa = Yii::$app->user->identity->mahasiswa;
+        $list_mahasiswa = ListMahasiswa::findOne(['nim'=>$mahasiswa->NIM]);
+        $searchModel = [];
+        $dataProvider = [];
+
+        $kartu_ujian = KartuUjian::findOne(['id_semester'=>$periode,'id_mahasiswa'=>$list_mahasiswa->id_mahasiswa]);
+        if($kartu_ujian)
+        {
+            $searchModel = new MahasiswaKrsSearch();
+            $searchModel->nim = $mahasiswa->NIM;
+            $searchModel->id_periode = $periode;
+            $queryParams = Yii::$app->request->queryParams;
+            $dataProvider = $searchModel->search($queryParams);
+        }
+
+        return $this->renderPartial('print-kartu-ujian', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
 
     /**
      * Logs in a user.

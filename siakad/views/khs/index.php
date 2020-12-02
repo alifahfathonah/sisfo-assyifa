@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -9,6 +10,9 @@ use yii\grid\GridView;
 
 $this->title = 'Kartu Hasil Studi';
 $this->params['breadcrumbs'][] = $this->title;
+if(!isset($cetak_url['MahasiswaKrsSearch']))
+    $cetak_url['MahasiswaKhsSearch']['id_periode'] = $searchModel->id_periode;
+array_unshift($cetak_url, 'print');
 ?>
 <div class="mahasiswa-khs-index">
 
@@ -25,6 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="input-group-btn">
                         <button class="btn btn-primary">Go</button>
                     </div>
+                    <div class="input-group-btn">
+                        <a href="<?=Url::to($cetak_url)?>" class="btn btn-primary"><i class="fa fa-print"></i> Cetak</a>
+                    </div>
                 </div>
             </div>
         </form>
@@ -32,28 +39,46 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        // 'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            [
+                'attribute'=>'Mata Kuliah',
+                'value'=>'nama_mata_kuliah',
+            ],
+            [
+                'attribute'=>'Kode',
+                'value'=>function($model){
+                    return $model->kelas?$model->kelas->kode_mata_kuliah:'-';
+                },
+            ],
+            
+            [
+                'attribute'=>'Bobot Studi',
+                'value'=>'sks_mata_kuliah',
+            ],
 
-            // 'id',
-            // 'id_registrasi_mahasiswa',
-            // 'id_prodi',
-            'nama_program_studi',
-            // 'id_periode',
-            // 'id_matkul',
-            'nama_mata_kuliah',
+            [
+                'attribute'=>'Nilai Angka',
+                'value'=>'nilai_angka',
+            ],
+
+            [
+                'attribute'=>'Nilai Huruf',
+                'value'=>'nilai_huruf',
+            ],
+
+            [
+                'attribute'=>'Bobot dan Nilai',
+                'value'=>function($model){
+                    return number_format($model->nilai_angka*$model->sks_mata_kuliah,2);
+                },
+            ],
             //'id_kelas',
             // 'nama_kelas_kuliah',
-            'sks_mata_kuliah',
-            // 'nilai_angka',
-            'nilai_huruf',
-            'nilai_indeks',
+            
             //'nim',
             //'nama_mahasiswa',
             //'angkatan',
-
-            // ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 

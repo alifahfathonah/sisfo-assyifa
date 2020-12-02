@@ -137,4 +137,9 @@ class Mahasiswa extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Seminar::className(),['mahasiswa_id'=>'id']);
     }
+
+    public function GetPembimbingAkademis()
+    {
+        return $this->hasOne(PembimbingAkademis::className(),['mahasiswa_id'=>'id']);
+    }
 }

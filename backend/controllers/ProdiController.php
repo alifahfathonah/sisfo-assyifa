@@ -3,11 +3,15 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Prodi;
-use common\models\ProdiSearch;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use common\models\Dosen;
+use common\models\Prodi;
 use yii\filters\VerbFilter;
+use common\models\ListProdi;
+use yii\helpers\ArrayHelper;
+use common\models\ImportFile;
+use common\models\ProdiSearch;
+use yii\web\NotFoundHttpException;
 
 /**
  * ProdiController implements the CRUD actions for Prodi model.
@@ -44,6 +48,47 @@ class ProdiController extends Controller
         ]);
     }
 
+    public function actionImport()
+    {        
+        $model = new ImportFile;
+        $model->tipe = 'upload';
+
+        if ($model->load(Yii::$app->request->post())) {
+            $uploadedFile = \yii\web\UploadedFile::getInstance($model,'file');
+            $contents = file_get_contents($uploadedFile->tempName);
+            $contents = json_decode($contents,1);
+            $transaction = \Yii::$app->db->beginTransaction();
+            try {
+                foreach($contents['data'] as $data)
+                {
+                    $check_prodi = Prodi::findOne(['kode'=>$data['kode_program_studi']]);
+                    if(!$check_prodi)
+                    {
+                        $prodi = new Prodi;
+                        $prodi->setAttributes([
+                            'kode' => $data['kode_program_studi'],
+                            'nama' => $data['nama_program_studi'],
+                            'jenjang' => $data['nama_jenjang_pendidikan'],
+                        ]);
+                        $prodi->save();
+                    }
+                    $importModel = new ListProdi;
+                    $importModel->setAttributes($data);
+                    $importModel->save();
+                }
+                $transaction->commit();
+            } catch (\Throwable $th) {
+                throw $th;
+                $transaction->rollback();
+            }
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('import', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Displays a single Prodi model.
      * @param integer $id
@@ -65,6 +110,8 @@ class ProdiController extends Controller
     public function actionCreate()
     {
         $model = new Prodi();
+        $list_dosen = Dosen::find()->all();
+        $list_dosen = ArrayHelper::map($list_dosen,'id','nama');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -72,6 +119,7 @@ class ProdiController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'list_dosen' => $list_dosen,
         ]);
     }
 
@@ -85,6 +133,8 @@ class ProdiController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $list_dosen = Dosen::find()->all();
+        $list_dosen = ArrayHelper::map($list_dosen,'id','nama');
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -92,6 +142,7 @@ class ProdiController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'list_dosen' => $list_dosen,
         ]);
     }
 

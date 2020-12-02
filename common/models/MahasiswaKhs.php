@@ -68,4 +68,9 @@ class MahasiswaKhs extends \yii\db\ActiveRecord
             'angkatan' => 'Angkatan',
         ];
     }
+
+    public function getKelas()
+    {
+        return $this->hasOne(KelasPerkuliahan::className(),['id_kelas_kuliah'=>'id_kelas']);
+    }
 }

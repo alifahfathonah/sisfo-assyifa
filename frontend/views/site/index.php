@@ -48,6 +48,12 @@ $this->title = 'Sistem Informasi STIKES As-Syifa';
                     <?php if(Yii::$app->user->isGuest): ?>
                     <p><a class="btn btn-lg btn-success" href="<?= Url::to(['site/login'])?>">Klik Untuk Memulai</a></p>
                     <?php endif ?>
+
+                    <?php if(Yii::$app->user->can('Mahasiswa')): ?>
+                    <?php if(Yii::$app->user->identity->mahasiswa->status == 'Lulus'): ?>
+                    <div class="alert alert-success">Anda adalah mahasiswa yang sudah lulus</div>
+                    <?php endif ?>
+                    <?php endif ?>
                 </div>
 
                 <div class="body-content">

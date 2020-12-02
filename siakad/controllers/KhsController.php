@@ -52,6 +52,41 @@ class KhsController extends Controller
         ]);
     }
 
+    public function actionPrint()
+    {
+        $mahasiswa = Yii::$app->user->identity->mahasiswa;
+        
+        $searchModel = new MahasiswaKhsSearch();
+        $searchModel->nim = $mahasiswa->NIM;
+
+        $tahun_akademik = Yii::$app->Ta->get();
+        $queryParams = Yii::$app->request->queryParams;
+        $ta = $tahun_akademik?$tahun_akademik->tahun.$tahun_akademik->periode:0;
+        if(!isset($queryParams['MahasiswaKhsSearch']['id_periode']))
+            $queryParams['MahasiswaKhsSearch']['id_periode'] = $ta;
+        $dataProvider = $searchModel->search($queryParams);
+
+        $ipk_query = $ipk = MahasiswaKhs::find()->where(['nim'=>$mahasiswa->NIM,'id_periode'=>$ta]);
+        $ipk_count = $ipk->count();
+        $ipk = $ipk_query->sum('nilai_angka')/$ipk_count;
+        $ipk = number_format($ipk,2);
+        $sks = $ipk_query->sum('sks_mata_kuliah');
+
+        $total = 0;
+        foreach($dataProvider->query->all() as $data)
+        {
+            $total += ($data['nilai_angka']*$data['sks_mata_kuliah']);
+        }
+    
+        return $this->renderPartial('cetak', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'ipk'=>$ipk,
+            'sks'=>$sks,
+            'total'=>$total,
+        ]);
+    }
+
     /**
      * Displays a single MahasiswaKhs model.
      * @param integer $id

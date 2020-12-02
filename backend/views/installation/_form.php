@@ -12,6 +12,8 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
+    <?= $form->field($model, 'id_perguruan_tinggi')->textInput(['maxlength' => true]) ?>
+    
     <?= $form->field($model, 'nama')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'logo')->fileInput(['class'=>'form-control']) ?>

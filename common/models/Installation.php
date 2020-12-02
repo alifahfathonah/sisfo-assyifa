@@ -28,7 +28,7 @@ class Installation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at'], 'safe'],
+            [['created_at','id_perguruan_tinggi'], 'safe'],
             [['nama'], 'string', 'max' => 255],
             [['logo'],'file','skipOnEmpty'=>TRUE,'extensions'=>'jpg, png']
         ];
@@ -41,6 +41,7 @@ class Installation extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'id_perguruan_tinggi' => 'ID Perguruan Tinggi',
             'nama' => 'Nama',
             'logo' => 'Logo',
             'created_at' => 'Created At',

@@ -32,6 +32,7 @@ class Prodi extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['dosen_id'], 'integer'],
             [['created_at'], 'safe'],
             [['kode', 'nama', 'jenjang'], 'string', 'max' => 255],
         ];
@@ -47,6 +48,7 @@ class Prodi extends \yii\db\ActiveRecord
             'kode' => 'Kode',
             'nama' => 'Nama',
             'jenjang' => 'Jenjang',
+            'dosen_id' => 'Ka Prodi',
             'created_at' => 'Created At',
         ];
     }
@@ -59,6 +61,11 @@ class Prodi extends \yii\db\ActiveRecord
     public function getKelas()
     {
         return $this->hasMany(Kelas::className(), ['prodi_id' => 'id']);
+    }
+
+    public function getDosen()
+    {
+        return $this->hasOne(Dosen::className(), ['id' => 'dosen_id']);
     }
 
     /**

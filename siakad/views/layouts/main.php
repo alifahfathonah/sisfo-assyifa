@@ -20,7 +20,7 @@ if($user->can('Mahasiswa'))
         ['label' => 'KRS', 'url' => ['krs/index']],
         ['label' => 'KHS', 'url' => ['khs/index']],
         ['label' => 'IPK', 'url' => ['ipk/index']],
-        // ['label' => 'Pembayaran dan Tagihan', 'url' => ['index']],
+        ['label' => 'Kartu Ujian', 'url' => ['site/kartu-ujian']],
     ];
 }
 elseif($user->can('Dosen'))

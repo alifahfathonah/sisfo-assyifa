@@ -22,7 +22,10 @@ use common\models\PraktekFile;
 use common\models\JadwalSearch;
 use common\models\VwJadwalSearch;
 use yii\web\NotFoundHttpException;
+use common\models\KelasPerkuliahan;
+use common\models\NilaiKelasKuliah;
 use common\models\PraktekDosenSearch;
+use common\models\KelasPerkuliahanSearch;
 use common\models\PraktekMahasiswaSearch;
 
 /**
@@ -52,13 +55,13 @@ class PenilaianController extends Controller
     public function actionIndex()
     {
         // Yii::$app->cache->flush();
-        $tahun_akademik = !empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get()->id : 0;;
-        $searchModel = new VwJadwalSearch();
-        $searchModel->tahun_akademik_id = $tahun_akademik;
-        $searchModel->dosen_id = Yii::$app->user->identity->dosen->id;
+        $tahun_akademik = !empty(Yii::$app->Ta->get()) ? Yii::$app->Ta->get() : 0;;
+        $searchModel = new KelasPerkuliahanSearch();
+        $searchModel->id_semester = $tahun_akademik->tahun.$tahun_akademik->periode;
+        $searchModel->nidn = Yii::$app->user->identity->dosen->NIDN;
 
         $queryParams = Yii::$app->request->queryParams;
-        unset($queryParams['VwJadwalSearch']['dosen_id']);
+        // unset($queryParams['VwJadwalSearch']['dosen_id']);
         $dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
@@ -82,12 +85,12 @@ class PenilaianController extends Controller
 
     public function actionDetail($id)
     {
-        $model = VwJadwal::findOne(['jadwal_id'=>$id]);
-        $penilaian = Penilaian::find()->where(['jadwal_id'=>$id])->all();
+        $model = KelasPerkuliahan::findOne(['id_kelas_kuliah'=>$id]);
+        $penilaian = NilaiKelasKuliah::find()->where(['id_kelas_kuliah'=>$id])->all();
         $penilaian_norm = [];
         foreach($penilaian as $key => $value)
         {
-            $penilaian_norm[$value->mahasiswa_id] = [
+            $penilaian_norm[$value->id_registrasi_mahasiswa] = [
                 'nilai_angka' => $value->nilai_angka,
                 'nilai_huruf' => $value->nilai_huruf,
             ];
@@ -103,24 +106,32 @@ class PenilaianController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($jadwal_id)
+    public function actionCreate($id)
     {
         $request = Yii::$app->request->post();
         if ($request) {
             foreach($request['nilai_angka'] as $key => $value)
             {
-                $model = new Penilaian();
+                $model = NilaiKelasKuliah::findOne(
+                    [
+                        'id_kelas_kuliah'=>$id,
+                        'id_registrasi_mahasiswa'=>$key,
+                    ]
+                );
+                if(!$model)
+                    $model = new NilaiKelasKuliah;
                 $model->setAttributes([
-                    'jadwal_id'=>$jadwal_id,
-                    'mahasiswa_id'=>$key,
+                    'id_kelas_kuliah'=>$id,
+                    'id_registrasi_mahasiswa'=>$key,
                     'nilai_angka'=>$value,
+                    'nilai_indeks'=>$value,
                     'nilai_huruf'=>$request['nilai_huruf'][$key]
                 ]);
                 $model->save();
                 // echo $request['nilai_huruf'][$key];
             }
             Yii::$app->session->addFlash("success", "Penilaian Berhasil Disimpan");
-            return $this->redirect(['detail', 'id' => $jadwal_id]);
+            return $this->redirect(['detail', 'id' => $id]);
         }
     }
 

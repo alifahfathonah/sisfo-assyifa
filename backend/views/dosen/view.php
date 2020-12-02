@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'method' => 'post',
                     ],
                 ]) ?>
+                <?= Html::a('Pembimbing Akademik', ['pembimbing-akademis/index', 'PembimbingAkademisSearch[dosen_id]' => $model->id], ['class' => 'btn btn-primary']) ?>
             </p>
 
             <?= DetailView::widget([

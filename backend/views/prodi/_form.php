@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use kartik\select2\Select2;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -25,6 +26,15 @@ use yii\widgets\ActiveForm;
         'S-II' => 'S-II',
         'Profesi' => 'Profesi',
     ]) ?>
+
+    <?= $form->field($model, 'dosen_id')->widget(Select2::classname(), [
+        'data' => $list_dosen,
+        'options' => ['placeholder' => '- Pilih Dosen -'],
+        'pluginOptions' => [
+            'tags'=>true,
+            'allowClear' => true,
+        ],
+    ]); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

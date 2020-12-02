@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-        <?= Html::a('Nilai', ['prodi-nilai/index', 'ProdiNilaiSearch[prodi_id]' => $model->id], ['class' => 'btn btn-success']) ?>
+        <?php // Html::a('Nilai', ['prodi-nilai/index', 'ProdiNilaiSearch[prodi_id]' => $model->id], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= DetailView::widget([
@@ -33,6 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'kode',
             'nama',
             'jenjang',
+            [
+                'attribute'=>'Ka Prodi',
+                'value'=>function($model)
+                {
+                    return $model->dosen?$model->dosen->nama:'';
+                }
+            ]
         ],
     ]) ?>
 

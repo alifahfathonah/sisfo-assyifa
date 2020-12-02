@@ -16,7 +16,7 @@ $columns = ['class' => 'yii\grid\ActionColumn',
 'template'=>'{view}',
 'buttons' => [
     'view' => function($url,$model) {
-        return Html::a('<i class="fa fa-eye"></i>', Url::to(['detail','id'=>$model->jadwal_id]), [
+        return Html::a('<i class="fa fa-eye"></i>', Url::to(['detail','id'=>$model->id_kelas_kuliah]), [
             'title' => Yii::t('app', 'view')
         ]);
     }
@@ -37,14 +37,17 @@ $columns = ['class' => 'yii\grid\ActionColumn',
             ['class' => 'yii\grid\SerialColumn'],
 
             'nama_dosen',
+            'kode_mata_kuliah',
             'nama_mata_kuliah',
-            [
-                'attribute'=>'kelas',
-                'value'=>function($model){
-                    return $model->kelas->nama;
-                }
-            ],
-            'mataKuliah.prodi.bobot_sks',
+            'sks',
+            'nama_kelas_kuliah',
+            // [
+            //     'attribute'=>'kelas',
+            //     'value'=>function($model){
+            //         return $model->kelas->nama;
+            //     }
+            // ],
+            // 'mataKuliah.prodi.bobot_sks',
             //'created_at',
             $columns,
         ],

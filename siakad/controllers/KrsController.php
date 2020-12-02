@@ -52,6 +52,25 @@ class KrsController extends Controller
         ]);
     }
 
+    public function actionPrint()
+    {
+        $mahasiswa = Yii::$app->user->identity->mahasiswa;
+        
+        $searchModel = new MahasiswaKrsSearch();
+        $searchModel->nim = $mahasiswa->NIM;
+
+        $tahun_akademik = Yii::$app->Ta->get();
+        $queryParams = Yii::$app->request->queryParams;
+        if(!isset($queryParams['MahasiswaKrsSearch']['id_periode']))
+            $queryParams['MahasiswaKrsSearch']['id_periode'] = $tahun_akademik?$tahun_akademik->tahun.$tahun_akademik->periode:0;
+        $dataProvider = $searchModel->search($queryParams);
+
+        return $this->renderPartial('cetak', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * Displays a single MahasiswaKrs model.
      * @param integer $id

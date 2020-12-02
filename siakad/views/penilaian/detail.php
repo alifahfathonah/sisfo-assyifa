@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Jadwal */
 
-$this->title = $model->nama_mata_kuliah.' - '.$model->kelas->nama;
+$this->title = $model->nama_mata_kuliah.' - '.$model->nama_kelas_kuliah;
 $this->params['breadcrumbs'][] = ['label' => 'Penilaian', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -20,23 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'nama_mata_kuliah',
-            [
-                'attribute'=>'kelas',
-                'value'=>function($model){
-                    return $model->kelas->nama;
-                }
-            ],
-            [
-                'attribute'=>'sks',
-                'value'=>function($model){
-                    return $model->mataKuliah->prodi->bobot_sks;
-                }
-            ],
+            'nama_kelas_kuliah',
+            'sks',
         ],
     ]) ?>
 
     <div class="table-responsive">
-    <?php $form = ActiveForm::begin(['action'=>['penilaian/create','jadwal_id'=>$model->jadwal_id]]); ?>
+    <?php $form = ActiveForm::begin(['action'=>['penilaian/create','id'=>$model->id_kelas_kuliah]]); ?>
     <table class="table table-bordered">
         <tr>
             <th>No</th>
@@ -45,16 +35,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <th>Nilai Angka</th>
             <th>Nilai Huruf</th>
         </tr>
-        <?php foreach($model->kelas->mahasiswas as $key => $mhs): ?>
+        <?php foreach($model->mahasiswas as $key => $mhs): ?>
         <tr>
             <td><?=++$key?></td>
-            <td><?=$mhs->NIM?></td>
-            <td><?=$mhs->nama?></td>
+            <td><?=$mhs->nim?></td>
+            <td><?=$mhs->nama_mahasiswa?></td>
             <td>
-            <?= Html::input('number', 'nilai_angka['.$mhs->id.']',isset($penilaian[$mhs->id])?$penilaian[$mhs->id]['nilai_angka']:0,['class'=>'form-control','min'=>0,'max'=>4,'step'=>'any']) ?>
+            <?= Html::input('number', 'nilai_angka['.$mhs->id_registrasi_mahasiswa.']',isset($penilaian[$mhs->id_registrasi_mahasiswa])?$penilaian[$mhs->id_registrasi_mahasiswa]['nilai_angka']:0,['class'=>'form-control','min'=>0,'max'=>4,'step'=>'any']) ?>
             </td>
             <td>
-            <?= Html::radioList('nilai_huruf['.$mhs->id.']',isset($penilaian[$mhs->id])?$penilaian[$mhs->id]['nilai_huruf']:'E',[
+            <?= Html::radioList('nilai_huruf['.$mhs->id_registrasi_mahasiswa.']',isset($penilaian[$mhs->id_registrasi_mahasiswa])?$penilaian[$mhs->id_registrasi_mahasiswa]['nilai_huruf']:'E',[
                 'A' => 'A',
                 'B' => 'B',
                 'C' => 'C',

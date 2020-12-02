@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="card-body">
     <p>
         <?= Html::a('Create Program Studi', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Import', ['import'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

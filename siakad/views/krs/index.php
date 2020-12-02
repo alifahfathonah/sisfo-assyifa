@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -9,6 +10,10 @@ use yii\grid\GridView;
 
 $this->title = 'Kartu Rencana Studi';
 $this->params['breadcrumbs'][] = $this->title;
+$cetak_url = Yii::$app->request->queryParams;
+if(!isset($cetak_url['MahasiswaKrsSearch']))
+    $cetak_url['MahasiswaKrsSearch']['id_periode'] = $searchModel->id_periode;
+array_unshift($cetak_url, 'print');
 ?>
 <div class="mahasiswa-krs-index">
 
@@ -25,6 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="input-group-btn">
                         <button class="btn btn-primary">Go</button>
                     </div>
+                    <div class="input-group-btn">
+                        <a href="<?=Url::to($cetak_url)?>" class="btn btn-primary"><i class="fa fa-print"></i> Cetak</a>
+                    </div>
                 </div>
             </div>
         </form>
@@ -40,13 +48,25 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'id_registrasi_mahasiswa',
             // 'id_periode',
             // 'id_prodi',
-            'nama_program_studi',
+            // 'nama_program_studi',
             //'id_matkul',
             'kode_mata_kuliah',
             'nama_mata_kuliah',
+            [
+                'attribute'=>'nama_dosen',
+                'format'=>'raw',
+                'value'=>function($model){
+                    $nama_dosen = $model->kelas?$model->kelas->nama_dosen:'';
+                    // $nama_dosen = explode(",",$nama_dosen);
+                    return str_replace(',','<br>',$nama_dosen);
+                }
+            ],
             //'id_kelas',
             // 'nama_kelas_kuliah',
-            'sks_mata_kuliah',
+            [
+                'attribute'=>'Bobot Studi',
+                'value'=>'sks_mata_kuliah',
+            ]
             //'nim',
             //'nama_mahasiswa',
             //'angkatan',
