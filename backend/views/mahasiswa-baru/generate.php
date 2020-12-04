@@ -50,8 +50,8 @@ array_unshift($array, 'export');
         </div>
 
         <div class="form-group">
-            <?= Html::submitButton('Generate', ['class' => 'btn btn-success','name'=>'generate']) ?>
-            <?= Html::submitButton('Regenerate', ['class' => 'btn btn-primary','name'=>'regenerate']) ?>
+            <?= Html::submitButton('Generate', ['class' => 'btn btn-success','name'=>'generate', 'value' => 'generate']) ?>
+            <?= Html::submitButton('Regenerate', ['class' => 'btn btn-primary','name'=>'generate', 'value' => 'regenerate']) ?>
             <?= Html::a('Export', Url::to($array), ['class' => 'btn btn-success']) ?>
         </div>
 

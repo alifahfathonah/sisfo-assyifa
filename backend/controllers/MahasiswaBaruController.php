@@ -95,7 +95,9 @@ class MahasiswaBaruController extends Controller
     {
         $installation = Installation::find()->one();
         $prodi = ListProdi::find()->all();
-        $prodi = ArrayHelper::map($prodi,'id_prodi','nama_program_studi');
+        $prodi = ArrayHelper::map($prodi,'id_prodi', function($m){
+            return $m->nama_jenjang_pendidikan.' - '.$m->nama_program_studi;
+        });
 
         $agama = Agama::find()->all();
         $agama = ArrayHelper::map($agama,'id_agama','nama_agama');
@@ -125,14 +127,19 @@ class MahasiswaBaruController extends Controller
             // print_r($file_skl);
             // return;
             if($model->validate()){
-                $model->save();
-                $filename = $model->nik.'-skl.'.$file_skl->extension;
-                $file_skl->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
-                $model->file_skl = $filename;
+                if(!empty($file_izin_bekerja))
+                {
+                    $filename = $model->nik.'-skl.'.$file_skl->extension;
+                    $file_skl->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
+                    $model->file_skl = $filename;
+                }
 
-                $filename = $model->nik.'-skkb.'.$file_skbb->extension;
-                $file_skbb->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
-                $model->file_skbb = $filename;
+                if(!empty($file_skbb))
+                {
+                    $filename = $model->nik.'-skkb.'.$file_skbb->extension;
+                    $file_skbb->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
+                    $model->file_skbb = $filename;
+                }
 
                 if(!empty($file_izin_bekerja))
                 {
@@ -141,19 +148,28 @@ class MahasiswaBaruController extends Controller
                     $model->file_izin_bekerja = $filename;
                 }
 
-                $filename = $model->nik.'-pas_foto.'.$file_pas_foto->extension;
-                $file_pas_foto->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
-                $model->file_pas_foto = $filename;
+                if(!empty($file_pas_foto))
+                {
+                    $filename = $model->nik.'-pas_foto.'.$file_pas_foto->extension;
+                    $file_pas_foto->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
+                    $model->file_pas_foto = $filename;
+                }
                 
-                $filename = $model->nik.'-ktp.'.$file_ktp->extension;
-                $file_ktp->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
-                $model->file_ktp = $filename;
+                if(!empty($file_ktp))
+                {
+                    $filename = $model->nik.'-ktp.'.$file_ktp->extension;
+                    $file_ktp->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
+                    $model->file_ktp = $filename;
+                }
                 
-                $filename = $model->nik.'-kk.'.$file_kk->extension;
-                $file_kk->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
-                $model->file_kk = $filename;
+                if(!empty($file_kk))
+                {
+                    $filename = $model->nik.'-kk.'.$file_kk->extension;
+                    $file_kk->saveAs(Yii::getAlias('@backend/web/uploads/') . $filename);
+                    $model->file_kk = $filename;
+                }
                 
-                $model->save(false);
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
             print_r($model->getErrors());
@@ -181,7 +197,9 @@ class MahasiswaBaruController extends Controller
         $model = $this->findModel($id);
 
         $prodi = ListProdi::find()->all();
-        $prodi = ArrayHelper::map($prodi,'id_prodi','nama_program_studi');
+        $prodi = ArrayHelper::map($prodi,'id_prodi', function($m){
+            return $m->nama_jenjang_pendidikan.' - '.$m->nama_program_studi;
+        });
 
         $agama = Agama::find()->all();
         $agama = ArrayHelper::map($agama,'id_agama','nama_agama');
@@ -212,7 +230,9 @@ class MahasiswaBaruController extends Controller
     public function actionGenerate()
     {
         $prodi = ListProdi::find()->all();
-        $prodi = ArrayHelper::map($prodi,'id_prodi','nama_program_studi');
+        $prodi = ArrayHelper::map($prodi,'id_prodi', function($m){
+            return $m->nama_jenjang_pendidikan.' - '.$m->nama_program_studi;
+        });
 
         $semester = Semester::find()->orderby(['id_semester'=>SORT_DESC])->limit(10)->all();
         $semester = ArrayHelper::map($semester,'id_semester','nama_semester');
@@ -229,7 +249,7 @@ class MahasiswaBaruController extends Controller
             ])->orderby(['nama_mahasiswa'=>SORT_ASC])->all();
             foreach($model as $key => $data)
             {
-                if(isset($_GET['generate']) && $data->nim) continue;
+                if(isset($_GET['generate']) && $_GET['generate'] == 'generate' && $data->nim) continue;
                 $tahun = date("Y", strtotime($data->tanggal_daftar));
                 $tahun = substr($tahun,2,2);
                 $_prodi = $data->prodi;
