@@ -23,12 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="col-sm-12 col-md-9">
-        <?php if(!$mahasiswa->accPengajuan): ?>
-        <p>
-            <?= Html::a('Ajukan Judul',['e-skripsi/pengajuan'],['class'=>'btn btn-success']) ?>
-        </p>
-        <?php endif ?>
-
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead>
