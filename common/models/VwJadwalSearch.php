@@ -60,6 +60,7 @@ class VwJadwalSearch extends VwJadwal
         if(is_array($this->dosen_id))
         {
             $query->andFilterWhere([
+                'tahun_akademik_id' => $this->tahun_akademik_id,
                 'kelas_id' => $this->kelas_id,
                 'waktu_mulai' => $this->waktu_mulai,
                 'waktu_selesai' => $this->waktu_selesai,
