@@ -1,0 +1,58 @@
+@font-face {
+    font-family: "raleway";
+    src: url("/fonts/Raleway-Regular.ttf") format('truetype');
+}
+
+body {
+    font-family: "raleway";
+    background-color:#eaeaea;
+}
+
+.home-navbar {
+    border-bottom: 2px solid #01d206;
+    background-color: #FFF;
+    height: 70px;
+}
+
+.home-navbar a.navbar-brand {
+    padding:0;
+    padding-top:15px;
+}
+
+.home-navbar .navbar-nav > li > a, .home-navbar .nav li > form > button.logout {
+    line-height: 35px;
+}
+
+.bg-white {
+    background-color: #FFF;
+    padding:15px;
+}
+.navbar-toggle {
+    position: relative;
+    float: right;
+    padding: 10px;
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+    background-color: #eaeaea;
+}
+a.navbar-brand {
+    margin-left:15px!important;
+}
+.navbar-collapse  {
+    background-color: #FFF;
+}
+
+ul.navbar-nav li a, a.navbar-brand, .btn-link.logout {
+    color:#01d206;
+    font-weight: bold;
+}
+
+ul.navbar-nav li.active a {
+    background-color: #01d206;
+    color:#FFF;
+}
+
+.btn-success {
+    background-color: #01d206;
+}
