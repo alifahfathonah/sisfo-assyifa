@@ -183,12 +183,47 @@ $this->params['breadcrumbs'][] = $this->title;
         console.log(element)
         var data = $(this).serializeArray();
         var url = "<?=Url::to(['materi/save-soal','dosen_pengampuh_id'=>$model->dosen_pengampuh_id,'jadwal_id'=>$jadwal_id,'parent_id'=>$parent->id])?>";
+        for(i=0;i<element.length;i++)
+        {
+            var el = []
+            el.push(element[i])
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    data:el
+                    // deletePosts:deletePosts
+                }
+            })
+            .done(function(response) {
+                // if(response.success)
+                // {
+                //     document.querySelector('.msg').innerHTML = `
+                //     <div class="alert alert-success" role="alert" id="success">
+                //         <button type="button" class="close" data-dismiss="alert">&times;</button>
+                //         ${response.message}
+                //     </div>`
+                // }
+                // else
+                // {
+                //     document.querySelector('.msg').innerHTML = `
+                //     <div class="alert alert-danger" role="alert" id="success">
+                //         <button type="button" class="close" data-dismiss="alert">&times;</button>
+                //         ${response.message}
+                //     </div>`
+                // }
+            })
+            .fail(function() {
+                console.log("error");
+            });
+        }
         $.ajax({
             url: url,
             type: 'post',
             dataType: 'json',
             data: {
-                data:element,
+                data:[],
                 deletePosts:deletePosts
             }
         })

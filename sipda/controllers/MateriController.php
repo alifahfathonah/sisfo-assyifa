@@ -232,16 +232,26 @@ class MateriController extends Controller
             $request = Yii::$app->request->post();
             $soals = $request['data'];
             $deletePosts = isset($request['deletePosts']) ? $request['deletePosts'] : [];
+            
+            if(empty($soals) && empty($deletePosts))
+            {
+                return [
+                    'success' => true,
+                    'message' => 'Soal Berhasil disimpan.',
+                ];
+            }
 
             $transaction = \Yii::$app->db->beginTransaction();
             try {
-
+                
+                if(!empty($deletePosts))
                 foreach($deletePosts as $id)
                 {
                     $materi = Materi::findOne($id);
                     if(!empty($materi)) $materi->delete();
                 }
-
+                
+                if(!empty($soals))
                 foreach($soals as $key => $soal)
                 {
                     if(!empty($soal['id'])){
